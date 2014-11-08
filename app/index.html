@@ -30,19 +30,21 @@
                 -webkit-filter: saturate(3);
                 filter: saturate(30%);
             }
-            div.one {
-                width: 50%;
+            .sidebyside {
                 float: left;
+                margin: 5px;
             }
-            div.two {
-                margin-left: 50%;
+            .centre {
+                margin-left: auto;
+                margin-right: auto;
+                width: auto;
             }
         </style>
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css"/>
     </head>
     <body ng-controller="PlayController as playCtrl" ng-keydown="playCtrl.keyTyped($event)">
-        <section>
-            <div class="one">
+        <section class="centre">
+            <div class="sidebyside">
                 <table>
                     <tr>
                         <td style="background-color: #071D57; padding: 4px;">
@@ -59,7 +61,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="two">
+            <div class="sidebyside">
                 <div class="panel panel-default" style="width: 270px; margin-bottom: 5px; padding-left: 5px;" ng-click="playCtrl.addWord()">
                     <h3>{{playCtrl.getFormingWord()}}_</h3>
                     <div style="width: 270px; height: 270px; overflow-y: auto;">

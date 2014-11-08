@@ -16,6 +16,7 @@ var wordlist = require('./server/engine/wordlist');
 var WordTree = require('./server/engine/wordtree');
 var BoggleEngine = require('./server/engine/boggleengine');
 var Game = require('./server/models/game');
+var Solution = require('./server/models/solution');
 
 // Loading words into word tree.  I DON'T EVEN NEED THIS YET!
 var str = fs.readFileSync('./server/data/common-234.txt', 'utf8');
@@ -46,17 +47,16 @@ router.use(function(req, res, next) {
 });
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-router.get('/', function(req, res) {
-//    res.json({ message: 'hooray! welcome to our api!' });   
+router.get('/', function(req, res) {  
     res.send(fs.readFileSync('./app/index.html', 'utf8'));
 });
 
 // more routes for our API will happen here// on routes that end in /bears
 // ----------------------------------------------------
-router.route('/startgame')
 
-    // create a game (accessed at GET http://localhost:8080/champboggle2015/game)
-    .get(function(req, res) {
+// create a game (accessed at GET http://localhost:8080/champboggle2015/startgame)
+// --------------------------------------------------------------------------
+router.route('/startgame').get(function(req, res) {
 
         var startTime = new Date();
         var dd = pad(startTime.getDate());
@@ -67,12 +67,15 @@ router.route('/startgame')
         var ss = pad(startTime.getSeconds());
         var mls = pad(startTime.getMilliseconds(), 3);
 
-        var game = new Game(); 		// create a new instance of the Game model
-        game.letters = engine.rollDice();  // set the game letters
+        var roll = engine.rollDice();
+        var id = roll + yy + MM + dd + hh + mm + ss + mls;
+        
+        var game = new Game(); // create a new instance of the Game model
+        game.id = id; 
+        game.letters = roll;
         game.startTime = startTime;
-        game.checkinPoint = game.letters + yy + MM + dd + hh + mm + ss + mls;
 
-        // save the game and check for errors
+        // save the game and send the response
 //	game.save(function(err) {
 //
 //            if (err) {
@@ -80,11 +83,28 @@ router.route('/startgame')
 //            }
 
             res.json({ 
-                letters: game.letters,
-                checkinPoint: game.checkinPoint});
+                letters: roll,
+                checkinPoint: id});
 //        });
-		
+        
+        var solution = new Solution(); // Generate the solution
+        solution.gameId = id;
+        solution.words = engine.solve(game.letters, wordTree);
+        
+        // save the solution
+//        solution.save(function(err) {
+//            if (err) {
+//                console.log(err);
+//            }
+//        });
     });
+    
+// check-in a word list
+// --------------------
+router.route('/checkin/:game_id').post(function(req, res) {
+    console.log("Game ID: " + req.params.game_id);
+    console.log("Game ID: " + req.body.words);
+});
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api

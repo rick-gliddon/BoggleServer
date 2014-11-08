@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html ng-app="tester">
+    <body ng-controller="ExampleController as ctrl">
+        <p>{{'Width: ' + ctrl.width + ' Height: ' + ctrl.height}}</p>
+        <script type="text/javascript" src="angular.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module("tester",[]);
+            app.controller('ExampleController', ['$window', function($window) {
+                var vm = this;
+                vm.width = $window.innerWidth;
+                vm.height = $window.innerHeight;
+            }]);
+        </script>
+    </body>
+</html>

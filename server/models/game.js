@@ -4,10 +4,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var GameSchema = new Schema({
-//    id: Schema.ObjectId,
+    id: {type: String, index: true },
     letters: { type: String, lowercase: true },
-    startTime: Date,
-    checkinPoint: String
+    startTime: Date
 });
 
 module.exports = mongoose.model('Game', GameSchema);
