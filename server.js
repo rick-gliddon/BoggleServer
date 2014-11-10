@@ -76,34 +76,60 @@ router.route('/startgame').get(function(req, res) {
         game.startTime = startTime;
 
         // save the game and send the response
-//	game.save(function(err) {
-//
-//            if (err) {
-//                res.send(err);
-//            }
+	game.save(function(err) {
+
+            if (err) {
+                res.send(err);
+            }
 
             res.json({ 
                 letters: roll,
                 checkinPoint: id});
-//        });
+        });
         
         var solution = new Solution(); // Generate the solution
         solution.gameId = id;
         solution.words = engine.solve(game.letters, wordTree);
         
         // save the solution
-//        solution.save(function(err) {
-//            if (err) {
-//                console.log(err);
-//            }
-//        });
+        solution.save(function(err) {
+            if (err) {
+                console.log(err);
+            }
+        });
     });
     
 // check-in a word list
 // --------------------
 router.route('/checkin/:game_id').post(function(req, res) {
-    console.log("Game ID: " + req.params.game_id);
-    console.log("Game ID: " + req.body.words);
+    Game.findOne({'id':req.params.game_id})
+        .select('letters startTime')
+        .exec(function handleFindGameResult(err, game) {
+            if (err) {
+                console.log('Error retrieving game: ' + err);
+                res.status(500).send(err);
+                return;
+            }
+            Solution.findOne({'gameId':req.params.game_id})
+                .select('words')
+                .exec(function handleFindSolutionResult(err, solution) {
+                    if (err) {
+                       console.log('Error retrieving solution: ' + err);
+                        res.status(500).send(err);
+                        return;
+                    }
+                    var correctWords = req.body.words
+                        .filter(function(word) {
+                            return solution.words.indexOf(word) >= 0;
+                        });
+                    // TODO
+                    // Map the correct words onto the solution words
+                    // Need to find my scratchings in my bag
+                    console.log('Complete words: ' + solution.words);
+                    console.log('Entered words: ' + req.body.words);
+                    console.log('Correct words: ' + correctWords);
+                });
+        });
 });
 
 // REGISTER OUR ROUTES -------------------------------
