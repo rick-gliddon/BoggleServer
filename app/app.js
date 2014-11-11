@@ -1,5 +1,31 @@
 (function() {
-  var app = angular.module('bogglesim',[]);
+  var app = angular.module('bogglesim',['title']);
+  
+  app.controller("StateController", [function() {
+    var sc = this;
+    
+    sc.StateEnum = {
+        TITLE : "Title",
+        PLAY : "Play",
+        RESULTS : "Results"
+    };
+    
+    var state = sc.StateEnum.TITLE;
+    
+    sc.isState = function(aState) {
+        return aState === state;
+    };
+    
+    sc.nextState = function() {
+        switch (state) {
+            case sc.StateEnum.TITLE:
+                state = sc.StateEnum.PLAY;
+                break;
+            default:
+                break;
+        }
+    };
+  }]);
 
   app.controller("PlayController", ['$http', '$interval', '$window', function($http, $interval, $window) {
     var pc = this;
