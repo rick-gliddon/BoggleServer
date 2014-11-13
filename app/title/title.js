@@ -1,13 +1,14 @@
 (function() {
-    var titleApp = angular.module('title', []);
     
-    titleApp.directive('gameTitle', function() {
+    angular.module('title', [])
+           .directive('boggleTitle', function() {
+                
        return {
            restrict: 'E',
            scope: {
                nextstate: '&'
            },
-           templateUrl: 'title/game-title.html',
+           templateUrl: 'title/title.html',
            controller: function($scope) {
                var tc = this;
     
