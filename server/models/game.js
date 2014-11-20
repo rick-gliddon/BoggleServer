@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var GameSchema = new Schema({
-    id: {type: String, index: true },
+    gameId: String,
     letters: { type: String, lowercase: true },
     startTime: Date
 });

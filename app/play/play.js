@@ -19,7 +19,8 @@
     function playController($rootScope, $scope, $http, $interval, $window) {
         var pc = this;
 
-        pc.GAME_DURATION = 180000;
+//        pc.GAME_DURATION = 180000;
+        pc.GAME_DURATION = 20000;
 
         var width = $window.innerWidth;
         var height = $window.innerHeight;
