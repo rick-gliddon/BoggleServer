@@ -2,3 +2,11 @@
 <h1>Boggle</h1>
 <h3>2015</h3>
 <div class="btn btn-default" ng-click="titleCtrl.startGame()">Start Game</div>
+<div>
+    <span></span>
+        <form ng-submit="submit()">
+            <input ng-model="user.username" type="text" name="user" placeholder="Username" />
+            <input ng-model="user.password" type="password" name="pass" placeholder="Password" />
+            <input type="submit" value="Login" />
+        </form>
+</div>

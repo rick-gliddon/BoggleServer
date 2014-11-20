@@ -112,7 +112,7 @@
             $interval.cancel(playTimer);
 
             var checkinWords = { words: pc.wordList };
-            $http.post('/champboggle2015/checkin/' + $scope.checkinpoint, checkinWords)
+            $http.post('/champboggle2015/api/checkin/' + $scope.checkinpoint, checkinWords)
                 .error(function() {
                     console.log('Error posting word list');
             });

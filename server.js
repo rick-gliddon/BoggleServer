@@ -9,9 +9,12 @@ var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 var fs         = require('fs');
 var path       = require('path');
+var expressJwt = require('express-jwt');
+var jwt        = require('jsonwebtoken');
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://bogglebot:botboggle@ds051750.mongolab.com:51750/boggledb'); // connect to our database
 
+var authenticate = require('./server/routes/authenticate');
 var startgameRoute = require('./server/routes/startgame');
 var checkinRoute = require('./server/routes/checkin');
 
@@ -43,15 +46,19 @@ router.use(function(req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
+// We are going to protect /api routes with JWT
+router.use('/api', expressJwt({secret: "bogglesecret"}));
+
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {  
     res.send(fs.readFileSync('./app/index.html', 'utf8'));
 });
-router.use('/startgame', startgameRoute);
-router.use('/checkin', checkinRoute);
+router.use('/authenticate', authenticate);
+router.use('/api/startgame', startgameRoute);
+router.use('/api/checkin', checkinRoute);
 
 // REGISTER OUR ROUTES -------------------------------
-// all of our routes will be prefixed with /api
+// all of our routes will be prefixed with /champboggle2015
 app.use('/champboggle2015', router);
 
 // START THE SERVER

@@ -42,7 +42,7 @@
     };
     
     function requestPlay() {
-        $http.get('/champboggle2015/startgame')
+        $http.get('/champboggle2015/api/startgame')
             .success(function(data) {
                 angular.extend($scope, data);
                 sc.nextState();
