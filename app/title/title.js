@@ -1,6 +1,6 @@
 (function() {
     
-    angular.module('title', [])
+    angular.module('title', ['signOn'])
            .directive('boggleTitle', function() {
                 
        return {
@@ -12,6 +12,12 @@
            controller: function($scope, $http, $window) {
                 var tc = this;
     
+                tc.createPlayerShown = false;
+                
+                tc.showCreatePlayer = function() {
+                    tc.createPlayerShown = !tc.createPlayerShown;
+                };
+                
                 tc.startGame = function() {
                     $scope.nextstate();
                 };
