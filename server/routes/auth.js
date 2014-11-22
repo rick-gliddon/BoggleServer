@@ -17,10 +17,25 @@ router.post('/create', function(req, res) {
               if (existingUser) {
                   res.status(400).send('User already exists');
               } else {
-                  res.status(400).send('Not implemented');
+                  createUserAndRespond(
+                          req.body.user, req.body.password, res);
               }
     });
 });
+
+function createUserAndRespond(username, password, res) {
+    var player = new Player();
+    player.username = username;
+    player.password = password;
+    player.save(function(err) {
+        if (err) {
+            console.log('Error saving player: ' + err);
+            res.status(500).send(err);
+            return;
+        }
+        respondSuccess(username, res);
+    });
+}
 
 router.post('/login', function(req, res) {
 //    var player = new Player();
@@ -52,5 +67,17 @@ router.post('/login', function(req, res) {
     res.json({ token: token });
 
 });
+
+function respondSuccess(username, res) {
+    
+    var profile = {
+        user: username
+    };
+
+    // We are sending the profile inside the token
+    var token = jwt.sign(profile, "bogglesecret", { expiresInMinutes: 60*5 });
+
+    res.json({ token: token });
+}
   
 module.exports = router;

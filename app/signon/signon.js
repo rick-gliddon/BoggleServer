@@ -20,20 +20,29 @@
         var ctrl = this;
     
         var newAccount = false;
+        var accountCreated = false;
         
         ctrl.existing = {
             user: '',
             password: ''
-        }
+        };
         ctrl.new = {
             user: '',
             password: ''
-        }
+        };
         ctrl.newReEnter = '';
         ctrl.showCreationError = false;
         ctrl.showLoginError = false;
         ctrl.creationErrorMessage = '';
         ctrl.loginErrorMessage = '';
+
+        ctrl.isAccountCreated = function() {
+            return accountCreated;
+        };
+        
+        function setAccountCreated(created) {
+            accountCreated = created;
+        };
 
         ctrl.isNewAccount = function() {
             return newAccount;
@@ -51,7 +60,7 @@
             ctrl.creationErrorMessage = "Passwords do not match";
             ctrl.showCreationError = !isPasswordMatch();
             return isPasswordMatch();
-        }
+        };
 
         ctrl.loginPlayer = function () {
             $http.post('/champboggle2015/auth/login', ctrl.existing)
@@ -71,7 +80,7 @@
             $http.post('/champboggle2015/auth/create', ctrl.new)
                 .success(function (data, status, headers, config) {
                     $window.sessionStorage.token = data.token;
-                    $modalInstance.close(ctrl.new.user);
+                    setAccountCreated(true);
                   })
                 .error(function (data, status, headers, config) {
                     // Erase the token if the user fails to log in
@@ -80,5 +89,28 @@
                     ctrl.showCreationError = true;
                   });
         };
+        
+        ctrl.playBoggle = function() {
+            var username = ctrl.new.user;
+            resetCtrl();
+            $modalInstance.close(username);
+        };
+        
+        function resetCtrl() {
+            setAccountCreated(false);
+            ctrl.setNewAccount(false);
+            ctrl.existing = {
+                user: '',
+                password: ''
+            };
+            ctrl.new = {
+                user: '',
+                password: ''
+            };
+            ctrl.showCreationError = false;
+            ctrl.showLoginError = false;
+            ctrl.creationErrorMessage = '';
+            ctrl.loginErrorMessage = '';
+        }
     }]);
 })();
