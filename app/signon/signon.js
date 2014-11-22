@@ -15,26 +15,70 @@
             };
 
     }])
-    .controller('SignOnBoggleController', ['$scope', '$modalInstance', function($scope, $modalInstance) {
+    .controller('SignOnBoggleController', ['$scope', '$modalInstance', '$http', '$window',
+      function($scope, $modalInstance, $http, $window) {
         var ctrl = this;
     
         var newAccount = false;
+        
+        ctrl.existing = {
+            user: '',
+            password: ''
+        }
+        ctrl.new = {
+            user: '',
+            password: ''
+        }
+        ctrl.newReEnter = '';
+        ctrl.showCreationError = false;
+        ctrl.showLoginError = false;
+        ctrl.creationErrorMessage = '';
+        ctrl.loginErrorMessage = '';
 
         ctrl.isNewAccount = function() {
             return newAccount;
-        }
+        };
         
         ctrl.setNewAccount = function(createNewAccount) {
             newAccount = createNewAccount;
+        };
+        
+        function isPasswordMatch() {
+            return ctrl.new.password === ctrl.newReEnter;
+        };
+        
+        ctrl.validatePassword = function() {
+            ctrl.creationErrorMessage = "Passwords do not match";
+            ctrl.showCreationError = !isPasswordMatch();
+            return isPasswordMatch();
         }
 
-        ctrl.loginPlayer = function (result) {
-            console.log("Logging Player In");
-            $modalInstance.close('Login');
+        ctrl.loginPlayer = function () {
+            $http.post('/champboggle2015/auth/login', ctrl.existing)
+                .success(function (data, status, headers, config) {
+                    $window.sessionStorage.token = data.token;
+                    $modalInstance.close(ctrl.existing.user);
+                  })
+                .error(function (data, status, headers, config) {
+                    // Erase the token if the user fails to log in
+                    delete $window.sessionStorage.token;
+                    ctrl.loginErrorMessage = "Incorrect username or password";
+                    ctrl.showLoginError = true;
+                  });
         };
+        
         ctrl.createPlayer = function () {
-            console.log("Creating Player");
-            $modalInstance.close('Create');
+            $http.post('/champboggle2015/auth/create', ctrl.new)
+                .success(function (data, status, headers, config) {
+                    $window.sessionStorage.token = data.token;
+                    $modalInstance.close(ctrl.new.user);
+                  })
+                .error(function (data, status, headers, config) {
+                    // Erase the token if the user fails to log in
+                    delete $window.sessionStorage.token;
+                    ctrl.creationErrorMessage = data;
+                    ctrl.showCreationError = true;
+                  });
         };
     }]);
 })();

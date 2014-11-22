@@ -14,7 +14,7 @@ var jwt        = require('jsonwebtoken');
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://bogglebot:botboggle@ds051750.mongolab.com:51750/boggledb'); // connect to our database
 
-var authenticate = require('./server/routes/authenticate');
+var authRoute = require('./server/routes/auth');
 var startgameRoute = require('./server/routes/startgame');
 var checkinRoute = require('./server/routes/checkin');
 
@@ -53,7 +53,7 @@ router.use('/api', expressJwt({secret: "bogglesecret"}));
 router.get('/', function(req, res) {  
     res.send(fs.readFileSync('./app/index.html', 'utf8'));
 });
-router.use('/authenticate', authenticate);
+router.use('/auth', authRoute);
 router.use('/api/startgame', startgameRoute);
 router.use('/api/checkin', checkinRoute);
 

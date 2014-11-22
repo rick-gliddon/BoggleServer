@@ -3,7 +3,12 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var Player = require('../models/player');
 
-router.post('/', function(req, res) {
+router.post('/create', function(req, res) {
+    console.log('Creating user: ' + req.body.user + ", " + req.body.password);
+    res.status(400).send('User already exists');
+});
+
+router.post('/login', function(req, res) {
 //    var player = new Player();
 //    player.username = 'Rick';
 //    player.password = 'Password1';

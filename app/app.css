@@ -1,3 +1,6 @@
+/*
+ * In-play styles
+ */
 div.dicebase {
     display: block;
     vertical-align: middle;
@@ -36,6 +39,9 @@ table.boggle, td.boggle {
     width: auto;
 }
 
+/*
+ * Styles for the Login page
+ */
 .form-signin
 {
     max-width: 330px;
@@ -110,4 +116,14 @@ table.boggle, td.boggle {
 {
     display: block;
     margin-top: 10px;
+}
+.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+}
+.ng-valid.ng-dirty {
+    border-color: #78FA89;
+}
+div.error-message {
+    color: #FA787E;
+    padding-bottom: 8px;
 }

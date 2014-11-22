@@ -6,21 +6,28 @@
             <h1 class="text-center login-title" ng-show="signOnCtrl.isNewAccount()">Create New Player</h1>
             <div class="account-wall">
                 <form name="playerLogin" class="form-signin"
-                      ng-submit="signOnCtrl.loginPlayer()"
+                      ng-submit="playerLogin.$valid && signOnCtrl.loginPlayer()"
                       ng-hide="signOnCtrl.isNewAccount()" novalidate>
-                    <input type="text" class="form-control" placeholder="Username" required autofocus>
-                    <input type="password" class="form-control" placeholder="Password" required>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-                    <div>playerLogin form is {{playerLogin.$valid}}</div>
+                    <input name="existingUser" ng-model="signOnCtrl.existing.user" 
+                           type="text" class="form-control" placeholder="Username" required autofocus>
+                    <input name="existingPassword" ng-model="signOnCtrl.existing.password" 
+                           type="password" class="form-control" placeholder="Password" required>
+                    <div ng-show="signOnCtrl.showLoginError" class="text-center error-message">
+                        {{signOnCtrl.loginErrorMessage}}</div>
+                    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign in"></input>
                 </form>
                 <form name="newPlayer" class="form-signin"
-                      ng-submit="signOnCtrl.createPlayer()"
+                      ng-submit="newPlayer.$valid && signOnCtrl.validatePassword() && signOnCtrl.createPlayer()"
                       ng-show="signOnCtrl.isNewAccount()" novalidate>
-                    <input type="text" class="form-control" placeholder="Username" required autofocus>
-                    <input type="password" class="form-control" placeholder="Password" required>
-                    <input type="password" class="form-control" placeholder="Re-enter Password" required>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Create Player</button>
-                    <div>newPlayer form is {{newPlayer.$valid}}</div>
+                    <input name="newUser" ng-model="signOnCtrl.new.user" 
+                           type="text" class="form-control" placeholder="Username" required autofocus>
+                    <input name="newPassword" ng-model="signOnCtrl.new.password" 
+                           type="password" class="form-control" placeholder="Password" required>
+                    <input name="newReEnter" ng-model="signOnCtrl.newReEnter" 
+                           type="password" class="form-control" placeholder="Re-enter Password" required>
+                    <div ng-show="signOnCtrl.showCreationError" class="text-center error-message">
+                        {{signOnCtrl.creationErrorMessage}}</div>
+                    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create Player"></input>
                 </form>
             </div>
             <a href="#" class="text-center new-account"
