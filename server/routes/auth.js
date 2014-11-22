@@ -5,7 +5,21 @@ var Player = require('../models/player');
 
 router.post('/create', function(req, res) {
     console.log('Creating user: ' + req.body.user + ", " + req.body.password);
-    res.status(400).send('User already exists');
+    
+    Player.findOne({'username':req.body.user})
+          .select('username')
+          .exec(function handleUserSearch(err, existingUser) {
+              if (err) {
+                  console.log('Error retreiving user: ' + err);
+                  res.status(500).send(err);
+                  return;
+              }
+              if (existingUser) {
+                  res.status(400).send('User already exists');
+              } else {
+                  res.status(400).send('Not implemented');
+              }
+    });
 });
 
 router.post('/login', function(req, res) {
