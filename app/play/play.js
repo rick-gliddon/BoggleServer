@@ -190,7 +190,7 @@
           this.style = {
             'width' : pc.diceWidth + 'px',
             'height' : pc.diceWidth + 'px',
-            'background' : 'url(dice' + this.rotation + 'deg.svg)',
+            'background' : 'url(svg/dice' + this.rotation + 'deg.svg)',
             'background-size' : pc.diceWidth + 'px ' + pc.diceWidth + 'px',
             'line-height' : pc.diceWidth + 'px',
             'font-size' : pc.fontSize + 'px',

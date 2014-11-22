@@ -1,6 +1,6 @@
 (function() {
     
-    angular.module('title', ['joinModule'])
+    angular.module('title', ['signOnModule'])
     .directive('boggleTitle', function() {
                 
        return {
@@ -13,16 +13,16 @@
            controllerAs: 'titleCtrl'
        } 
     })
-    .controller('BoggleTitleController', ['$scope', '$http', '$window', 'joinBoggle', 
-        function($scope, $http, $window, joinBoggle) {
+    .controller('BoggleTitleController', ['$scope', '$http', '$window', 'signOnBoggle', 
+        function($scope, $http, $window, signOnBoggle) {
             var tc = this;
     
             tc.startGame = function() {
                 $scope.nextstate();
             };
 
-            tc.showJoinBoggle = function() {
-                joinBoggle.show();//TODO then?
+            tc.showSignOnBoggle = function() {
+                signOnBoggle.show();//TODO then?
             };
 
             $scope.user = {username: 'john.doe', password: 'foobar'};
