@@ -6,7 +6,7 @@ var Player = require('../models/player');
 router.post('/create', function(req, res) {
     console.log('Creating user: ' + req.body.user + ", " + req.body.password);
     
-    Player.findOne({'username':req.body.user})
+    Player.findOne({'username':req.body.user.toLowerCase()})
           .select('username')
           .exec(function handleUserSearch(err, existingUser) {
               if (err) {
@@ -18,9 +18,9 @@ router.post('/create', function(req, res) {
                   res.status(400).send('User already exists');
               } else {
                   createUserAndRespond(
-                          req.body.user, req.body.password, res);
+                          req.body.user.toLowerCase(), req.body.password, res);
               }
-    });
+          });
 });
 
 function createUserAndRespond(username, password, res) {
@@ -38,40 +38,28 @@ function createUserAndRespond(username, password, res) {
 }
 
 router.post('/login', function(req, res) {
-//    var player = new Player();
-//    player.username = 'Rick';
-//    player.password = 'Password1';
-//    player.save(function(err) {
-//        if (err) {
-//            res.send(err);
-//        }
-//    });
     
-    //TODO validate req.body.username and req.body.password
-    //if is invalid, return 401
-    if (!(req.body.username === 'Rick' && req.body.password === 'Password1')) {
-        res.send(401, 'Wrong user or password');
-        return;
-    }
-
-    var profile = {
-        first_name: 'Rick',
-        last_name: 'Gliddon',
-        email: 'rick.gliddon@gmail.com',
-        id: 123
-    };
-
-    // We are sending the profile inside the token
-    var token = jwt.sign(profile, "bogglesecret", { expiresInMinutes: 60*5 });
-
-    res.json({ token: token });
-
+    Player.findOne({'username':req.body.user.toLowerCase(),
+                    'password':req.body.password})
+          .select('username')
+          .exec(function handleUserSearch(err, existingUser) {
+              if (err) {
+                  console.log('Error validating user: ' + err);
+                  res.status(500).send(err);
+                  return;
+              }
+              if (existingUser) {
+                  respondSuccess(existingUser.username, res);
+              } else {
+                  res.status(401).send("Incorrect username or password Yo");
+              }
+          });
 });
 
 function respondSuccess(username, res) {
     
     var profile = {
-        user: username
+        name: username
     };
 
     // We are sending the profile inside the token

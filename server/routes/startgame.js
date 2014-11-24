@@ -13,7 +13,7 @@ router.setWordTree = function(newWordTree) {
 // create a game (accessed at GET http://localhost:8080/champboggle2015/startgame)
 // --------------------------------------------------------------------------
 router.get('/', function(req, res) {
-    console.log('user ' + req.user.email + ' is calling startgame');
+    console.log('user ' + req.user.name + ' is calling startgame');
     // Create the Boggle Engine!!!
     var engine = new BoggleEngine();
 

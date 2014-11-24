@@ -66,12 +66,12 @@
             $http.post('/champboggle2015/auth/login', ctrl.existing)
                 .success(function (data, status, headers, config) {
                     $window.sessionStorage.token = data.token;
-                    $modalInstance.close(ctrl.existing.user);
+                    closeAndReturnUser(ctrl.existing.user);
                   })
                 .error(function (data, status, headers, config) {
                     // Erase the token if the user fails to log in
                     delete $window.sessionStorage.token;
-                    ctrl.loginErrorMessage = "Incorrect username or password";
+                    ctrl.loginErrorMessage = data;
                     ctrl.showLoginError = true;
                   });
         };
@@ -91,10 +91,13 @@
         };
         
         ctrl.playBoggle = function() {
-            var username = ctrl.new.user;
+            closeAndReturnUser(ctrl.new.user);
+        };
+        
+        function closeAndReturnUser(username) {
             resetCtrl();
             $modalInstance.close(username);
-        };
+        }
         
         function resetCtrl() {
             setAccountCreated(false);
