@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var PlayerWordsSchema = new Schema({
     gameId: String,
+    player: { type: String, lowercase: true },
     words: [String]
 });
 

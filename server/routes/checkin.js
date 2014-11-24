@@ -8,6 +8,7 @@ var Solution = require('../models/solution');
 // --------------------
 router.post('/:game_id', function(req, res) {
     var gameId = req.params.game_id;
+    var player = req.user.name;
     var playerWords = req.body.words;
     
     // Find the game with the given game ID
@@ -19,13 +20,19 @@ router.post('/:game_id', function(req, res) {
                 res.status(500).send(err);
                 return;
             }
-            persistPlayerWordsAndProcess(playerWords, game, res);
+            if (game) {
+                persistPlayerWordsAndProcess(player, playerWords, game, res);
+            
+            } else {
+                console.log('Error retrieving game: ' + err);
+                res.status(500).send(err);
+            }
         });
 });
 
-function persistPlayerWordsAndProcess(playerWords, game, res) {
+function persistPlayerWordsAndProcess(player, playerWords, game, res) {
     // First check whether player words have already been persisted
-    PlayerWords.findOne({'gameId':game.gameId})
+    PlayerWords.findOne({'gameId':game.gameId, 'player':player})
         .exec(function handleFindPlayerWordsResult(err, result) {
             if (err) {
                 console.log('Error retrieving game: ' + err);
@@ -36,6 +43,7 @@ function persistPlayerWordsAndProcess(playerWords, game, res) {
             if (!result) {
                 var playerWordsModel = new PlayerWords();
                 playerWordsModel.gameId = game.gameId;
+                playerWordsModel.player = player;
                 playerWordsModel.words = playerWords;
                 playerWordsModel.save(function(err) {
                     if (err) {
@@ -47,6 +55,8 @@ function persistPlayerWordsAndProcess(playerWords, game, res) {
                 // posted their words.
                 createAndSendResult(playerWordsModel, res);
             }
+            // TODO: Multiplayer, need to check all players have
+            // posted their words.
     });
 }
     
