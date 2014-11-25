@@ -6,8 +6,8 @@
                     <table class="boggle">
                         <tr ng-repeat="matrixRow in playCtrl.matrix">
                             <td ng-repeat="die in matrixRow" class="boggle">
-                                <div class="dicebase" ng-style="die.style" ng-click="playCtrl.click(die)" ng-class="{dieselected: die.selected}">
-                                    {{die.letter}}<span ng-show="die.isQ()" class="dicebase" ng-style="playCtrl.uStyle">u</span>
+                                <div class="dicebase noselect" ng-style="die.style" ng-click="playCtrl.click(die)" ng-class="{dieselected: die.selected}">
+                                    {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect" ng-style="playCtrl.uStyle">u</span>
                                 </div>
                             </td>
                         </tr>

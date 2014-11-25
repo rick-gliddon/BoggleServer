@@ -6,7 +6,8 @@
     </head>
     <body ng-controller="StateController as stateCtrl">
         <div ng-show="stateCtrl.isTitleState()">
-            <boggle-title nextstate="stateCtrl.nextState()"></boggle-title>
+            <boggle-title nextstate="stateCtrl.nextState()"
+                          player="player"></boggle-title>
         </div>
         <div ng-show="stateCtrl.isPlayState()">
             <boggle-play nextstate="stateCtrl.nextState()"

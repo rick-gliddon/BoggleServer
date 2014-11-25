@@ -6,7 +6,8 @@
        return {
            restrict: 'E',
            scope: {
-               nextstate: '&'
+               nextstate: '&',
+               player: '='
            },
            templateUrl: 'title/title.html',
            controller: 'BoggleTitleController',
@@ -16,31 +17,45 @@
     .controller('BoggleTitleController', ['$scope', '$http', '$window', 'signOnBoggle', 
         function($scope, $http, $window, signOnBoggle) {
             var tc = this;
+            
+            $http.get('/champboggle2015/api/identify')
+                    .success(function(data) {
+                        $scope.player = data;
+                    })
+                    .error(function(data, status) {
+                        if (status === 401) {
+                            $scope.player = 'guest';
+                        } else {
+                            console.log('Error identifying user, status: '
+                                    + status + ', msg: ' + data);
+                        }
+                    });
     
             tc.startGame = function() {
                 $scope.nextstate();
             };
 
             tc.showSignOnBoggle = function() {
-                signOnBoggle.show();//TODO then?
+                signOnBoggle.show().then(function(newPlayer) {
+                    $scope.player = newPlayer;
+                });
             };
 
-            $scope.user = {username: 'john.doe', password: 'foobar'};
-            $scope.message = '';
-            $scope.submit = function () {
-                $http
-                  .post('/champboggle2015/authenticate', $scope.user)
-                    .success(function (data, status, headers, config) {
-                    $window.sessionStorage.token = data.token;
-                    $scope.message = 'Welcome';
-                  })
-                  .error(function (data, status, headers, config) {
-                    // Erase the token if the user fails to log in
-                    delete $window.sessionStorage.token;
-
-                    // Handle login errors here
-                    $scope.message = 'Error: Invalid user or password';
-                  });
-            };
+            tc.isLoggedIn = function() {
+                return $scope.player && $scope.player !== 'guest';
+            }
+            
+            tc.signOut = function() {
+                delete $window.sessionStorage.token;
+                $scope.player = 'guest';
+            }
+            
+            tc.capitalisePlayer = function() {
+                if (!$scope.player) {
+                    return '';
+                }
+                return $scope.player.charAt(0).toUpperCase()
+                        + $scope.player.substring(1);
+            }
         }]);
 })();

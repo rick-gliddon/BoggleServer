@@ -54,6 +54,7 @@ router.get('/', function(req, res) {
     res.send(fs.readFileSync('./app/index.html', 'utf8'));
 });
 router.use('/auth', authRoute);
+router.get('/api/identify', function(req, res) {res.send(req.user.name);});
 router.use('/api/startgame', startgameRoute);
 router.use('/api/checkin', checkinRoute);
 
