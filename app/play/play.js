@@ -20,7 +20,7 @@
         var pc = this;
 
 //        pc.GAME_DURATION = 180000;
-        pc.GAME_DURATION = 20000;
+        pc.GAME_DURATION = 30000;
 
         var width = $window.innerWidth;
         var height = $window.innerHeight;
@@ -115,7 +115,11 @@
             $http.post('/champboggle2015/api/checkin/' + $scope.checkinpoint, checkinWords)
                 .error(function() {
                     console.log('Error posting word list');
-            });
+                })
+                .success(function(data, status) {
+                    console.log('Got success status: ' + status);
+                    // TODO Try, try again
+                });
           }
         }
 

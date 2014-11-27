@@ -84,6 +84,7 @@ function createPlayerInGame(player, gameId) {
     var playerInGame = new PlayerInGame();
     playerInGame.gameId = gameId;
     playerInGame.player = player;
+    playerInGame.words = null;
     playerInGame.save(function(err) {
         if (err) {
             console.log('Error creating player in game: ' + err);
