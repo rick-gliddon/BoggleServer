@@ -110,4 +110,16 @@ module.exports = function() {
 		}
 		return str;
 	};
-}
+        
+        this.calculateScore = function(word) {
+            var score;
+            if (word.length < 3) {
+                score = 0;
+            } else if (word.length === 3 || word.length === 4) {
+                score = 1;
+            } else {
+                score = word.length - 3;
+            }
+            return score;
+        };
+};
