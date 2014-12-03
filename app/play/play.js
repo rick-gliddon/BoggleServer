@@ -21,6 +21,7 @@
 
 //        pc.GAME_DURATION = 180000;
         pc.GAME_DURATION = 30000;
+        pc.MAX_POLL_TIME = 20000;
 
         var width = $window.innerWidth;
         var height = $window.innerHeight;
@@ -44,9 +45,10 @@
           'font-size' : pc.uFontSize + 'px'
         };
 
-        var startTime;
-        // TODO this needs to move into a function
+        var startPlayTime;
         var playTimer;
+        var startPollTime;
+        var pollTimer;
 
         pc.getFormingWord = function() {
           return pc.formingDice
@@ -102,29 +104,46 @@
         };
 
         function progressPlay() {
-          if (!startTime) {
-            startTime = new Date();
+          if (!startPlayTime) {
+            startPlayTime = new Date();
           }
           var currentTime = new Date();
-          pc.timePlaying = currentTime - startTime;
+          pc.timePlaying = currentTime - startPlayTime;
           pc.gameProgress = Math.floor(pc.timePlaying * 100 / pc.GAME_DURATION);
           if (!isGameInPlay()) {
             $interval.cancel(playTimer);
-
-            var checkinWords = { words: pc.wordList };
-            $http.post('/champboggle2015/api/checkin/' + $scope.checkinpoint, checkinWords)
-                .error(function() {
-                    console.log('Error posting word list');
-                })
-                .success(function(data, status) {
-                    console.log('Got success status: ' + status);
-                    // TODO Try, try again
-                });
+            startPlayTime = null;
+            postWords();
           }
         }
 
         function isGameInPlay() {
           return pc.timePlaying <= pc.GAME_DURATION;
+        }
+        
+        function postWords() {
+            var checkinWords = { words: pc.wordList };
+            $http.post('/champboggle2015/api/checkin/' + $scope.checkinpoint, checkinWords)
+                .error(function() {
+                    $window.alert('Error posting word list');
+                })
+                .success(function(data, status) {
+                    if (status === 202) {
+                        if (!startPollTime) {
+                            startPollTime = new Date();
+                        }
+                        var currentTime = new Date();
+                        if (currentTime - startPollTime <= pc.MAX_POLL_TIME) {
+                            console.log('Accepted, polling in 1 second');
+                            $interval(postWords, 1000, 1);
+                        } else {
+                            $window.alert("Boggle Server has taken too long to respond");
+                        }
+                    } else {
+                        startPollTime = null;
+                        console.log('Success, got json: ' + data.toString());
+                    }
+                });
         }
 
         function isAdjacent(die) {

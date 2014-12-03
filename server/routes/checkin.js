@@ -77,7 +77,7 @@ function getResultAndProcess(player, game, res) {
                 console.log(errStr);
                 res.status(500).send(errStr);
             } else if (gameResult) {
-                sendResult(player, gameResult, res);
+                sendResult(gameResult, res);
             } else {
                 getAllPlayerWordsAndProcess(player, game, res);
             }
@@ -145,9 +145,12 @@ function createResultAndProcess(player, players, game, res) {
                         if (contains(playerInGame.words, word)) {
                             var pid = playerIds[playerInGame.player];
                             wordResult.pls.push(pid);
-                            scores[pid] += wordResult.scr;
                         }
                     });
+                    // If only one player found the word, add the score to his total
+                    if (wordResult.pls.length === 1) {
+                        scores[wordResult.pls[0]] += wordResult.scr;
+                    }
                     gameResult.wds.push(wordResult);
                 });
                 
@@ -162,24 +165,28 @@ function createResultAndProcess(player, players, game, res) {
                         console.log(errStr);
                         res.status(500).send(errStr);
                     } else {
-                        sendResult(player, gameResult, res);
+                        sendResult(gameResult, res);
                     }
                 });
             }
         });
 }
 
-function sendResult(player, gameResult, res) {
-    console.log('sendResult called');
-    console.log('gameResult.gid: ' + gameResult.gid);
-    console.log('gameResult.pls: ' + gameResult.pls);
-    console.log('gameResult.scs: ' + gameResult.scs);
-    gameResult.wds.forEach(function(word, index) {
-        console.log('gameResult.wds['+index+'].wrd: ' + word.wrd);
-        console.log('gameResult.scr['+index+'].scr: ' + word.scr);
-        console.log('gameResult.pls['+index+'].pls: ' + word.pls);
+function sendResult(gameResult, res) {
+    var sendResult = {
+        pls : gameResult.pls,
+        scs : gameResult.scs,
+        wds : []
+    };
+    gameResult.wds.forEach(function(grWd) {
+        var srWd = {
+            wrd : grWd.wrd,
+            scr : grWd.scr,
+            pls : grWd.pls
+        };
+        sendResult.wds.push(srWd);
     });
-    res.send("Everything's Cool");
+    res.json(sendResult);
 }
 
 function contains(list, item) {
