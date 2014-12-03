@@ -14,6 +14,9 @@
                          letters="letters"
                          checkinpoint="checkinPoint"></boggle-play>
         </div>
+        <div ng-show="stateCtrl.isResultState()">
+            <boggle-results nextstate="stateCtrl.nextState()"></boggle-results>
+        </div>
 
         <script type="text/javascript" src="libs/angular.js"></script>
         <script type="text/javascript" src="libs/ui-bootstrap-tpls-0.12.0.js"></script>
@@ -22,5 +25,6 @@
         <script type="text/javascript" src="state/state.js"></script>
         <script type="text/javascript" src="title/title.js"></script>
         <script type="text/javascript" src="play/play.js"></script>
+        <script type="text/javascript" src="results/results.js"></script>
     </body>
 </html>

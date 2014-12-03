@@ -15,8 +15,8 @@
             controllerAs: 'playCtrl'
         }            
     })
-    .controller('BogglePlayController', ['$rootScope', '$scope', '$http', '$interval', '$window',
-      function playController($rootScope, $scope, $http, $interval, $window) {
+    .controller('BogglePlayController', ['$rootScope', '$scope', '$http', '$interval', '$window', 'gameResults',
+      function playController($rootScope, $scope, $http, $interval, $window, gameResults) {
         var pc = this;
 
 //        pc.GAME_DURATION = 180000;
@@ -127,7 +127,7 @@
                 .error(function() {
                     $window.alert('Error posting word list');
                 })
-                .success(function(data, status) {
+                .success(function(finalResults, status) {
                     if (status === 202) {
                         if (!startPollTime) {
                             startPollTime = new Date();
@@ -141,7 +141,10 @@
                         }
                     } else {
                         startPollTime = null;
-                        console.log('Success, got json: ' + data.toString());
+                        gameResults.setFoundWords(pc.wordList);
+                        gameResults.setFinalResults(finalResults);
+                        console.log('Success, got final result');
+                        $scope.nextstate();
                     }
                 });
         }

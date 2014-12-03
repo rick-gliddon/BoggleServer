@@ -9,7 +9,6 @@
         TITLE : "Title",
         REQUEST_PLAY : "RequestPlay",
         PLAY : "Play",
-        REQUEST_RESULTS : "RequestResults",
         RESULTS : "Results"
     };
     
@@ -24,6 +23,10 @@
         return state === sc.StateEnum.PLAY;
     };
     
+    sc.isResultState = function() {
+        return state === sc.StateEnum.RESULTS;
+    }
+    
     sc.nextState = function() {
         switch (state) {
             case sc.StateEnum.TITLE:
@@ -34,7 +37,7 @@
                 state = sc.StateEnum.PLAY;
                 break;
             case sc.StateEnum.PLAY:
-                state = sc.StateEnum.REQUEST_RESULTS;
+                state = sc.StateEnum.RESULTS;
                 break;
             default:
                 break;
