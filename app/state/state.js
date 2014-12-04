@@ -25,7 +25,7 @@
     
     sc.isResultState = function() {
         return state === sc.StateEnum.RESULTS;
-    }
+    };
     
     sc.nextState = function() {
         switch (state) {

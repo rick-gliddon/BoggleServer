@@ -15,7 +15,8 @@
                          checkinpoint="checkinPoint"></boggle-play>
         </div>
         <div ng-show="stateCtrl.isResultState()">
-            <boggle-results nextstate="stateCtrl.nextState()"></boggle-results>
+            <boggle-results nextstate="stateCtrl.nextState()"
+                            player="player"></boggle-results>
         </div>
 
         <script type="text/javascript" src="libs/angular.js"></script>

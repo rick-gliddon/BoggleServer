@@ -138,3 +138,15 @@ div.error-message {
 div.play-some-boggle {
     padding-bottom: 20px;
 }
+
+
+/*
+ * Results page
+ */
+td.rushjob {
+    font-family: "Courier New", Courier, monospace;
+    padding-right: 5px;
+}
+td.scores {
+    padding-right: 7px;
+}

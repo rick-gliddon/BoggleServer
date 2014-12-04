@@ -1,15 +1,27 @@
 <div>
-    <h3>Player Scores</h3>
     <table>
-        <tr>
-            <td ng-repeat="player in resultsCtrl.finalResults.pls">
-                {{player}}
-            </td>
-        </tr>
-        <tr>
-            <td ng-repeat="score in resultsCtrl.finalResults.scs">
-                {{score}}
+        <tr ng-repeat="matrixRow in resultsCtrl.matrix">
+            <td ng-repeat="die in matrixRow" class="rushjob">
+                {{die.letter}}
             </td>
         </tr>
     </table>
+    <p>{{resultsCtrl.letters}}</p>
+    <div ng-hide="resultsCtrl.singlePlayer">
+        <h4>Player Scores</h4>
+        <table>
+            <tr ng-repeat="playerScore in resultsCtrl.playerScores">
+                <td class="scores">
+                    {{playerScore.player}}
+                </td>
+                <td>
+                    {{playerScore.score}}
+                </td>
+            </tr>
+        </table>
+        <h4 ng-show="resultsCtrl.youWon">You won the round!</h4>
+    </div>
+    <h4 ng-show="resultsCtrl.singlePlayer">
+        Your score: {{resultsCtrl.playerScores[0].score}}
+    </h4>
 </div>

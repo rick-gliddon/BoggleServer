@@ -21,29 +21,32 @@
   });
   
   app.factory('gameResults', function() {
-    var foundWords = {};
-    var finalResult = {};
-    
-    function setFoundWords(words) {
-        foundWords = words;
-    }
-    function getFoundWords() {
-        return foundWords;
-    }
-    function setFinalResults(result) {
-        finalResult = result;
-    }
-    function getFinalResults() {
-        return finalResult;
-    }
-
-    return {
-        setFoundWords: setFoundWords,
-        getFoundWords: getFoundWords,
-        setFinalResults: setFinalResults,
-        getFinalResults: getFinalResults
-    };
-
+      var callbackList = [];
+      
+      function addCallback(newCallback) {
+          if (callbackList.indexOf(newCallback) < 0) {
+              callbackList.push(newCallback);
+          }
+      }
+      
+      function removeCallback(remCallback) {
+          var index = callbackList.indexOf(remCallback);
+          if (index >= 0) {
+              callbackList.splice(index, 1);
+          }
+      }
+      
+      function notify(matrix, playerWords, finalResults) {
+          callbackList.forEach(function(callback) {
+              callback(matrix, playerWords, finalResults);
+          });
+      }
+      
+      return {
+          addCallback : addCallback,
+          removeCallback : removeCallback,
+          notify : notify
+      };
   });
 
 app.config(function ($httpProvider) {

@@ -141,8 +141,7 @@
                         }
                     } else {
                         startPollTime = null;
-                        gameResults.setFoundWords(pc.wordList);
-                        gameResults.setFinalResults(finalResults);
+                        gameResults.notify(pc.matrix, pc.wordList, finalResults);
                         console.log('Success, got final result');
                         $scope.nextstate();
                     }
