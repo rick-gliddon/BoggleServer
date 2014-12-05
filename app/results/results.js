@@ -34,7 +34,7 @@
                 rc.playerScores.push(playerScore);
             });
             rc.playerScores.sort(function(a, b) {
-                return a - b;
+                return b.score - a.score;
             });
             rc.singlePlayer = rc.playerScores.length === 1;
             rc.youWon = $scope.player === rc.playerScores[0].player;
