@@ -25,6 +25,9 @@ var str = fs.readFileSync('./server/data/common-234.txt', 'utf8');
 var words = wordlist.createWordList(str);
 var wordTree = new WordTree();
 wordTree.addWords(words);
+str = fs.readFileSync('./server/data/linux.words', 'utf8');
+words = wordlist.createWordList(str);
+wordTree.addWords(words);
 startgameRoute.setWordTree(wordTree);
 
 // configure app to use bodyParser()

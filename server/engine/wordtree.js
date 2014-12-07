@@ -7,6 +7,9 @@ function WordTree() {
 WordTree.prototype = {
 
     constructor: WordTree,
+    
+    ASCII_a: 'a'.charCodeAt(0),
+    ASCII_z: 'z'.charCodeAt(0),
 
     addWord: function(newWord, node) {
     	node = node || this.head;
@@ -25,7 +28,22 @@ WordTree.prototype = {
 
 	addWords: function(newWords) {
 		for (var i = 0; i < newWords.length; i++) {
-			this.addWord(newWords[i], this.head);
+                    if (newWords[i].length >= 3) {
+                        var isLowerCase = true;
+                        for (var c = 0; c < newWords[i].length; c++) {
+                            var charASCII = newWords[i].charCodeAt(c);
+                            if (charASCII < this.ASCII_a
+                                    || charASCII > this.ASCII_z) {
+//                                console.log('Rejected word: ' + newWords[i] + ' char: ' + c);
+                                isLowerCase = false;
+                                break;
+                            }
+                        }
+                        if (isLowerCase) {
+//                            console.log('Accepted word: ' + newWords[i]);
+                            this.addWord(newWords[i], this.head);
+                        }
+                    }
 		}
 	},
 

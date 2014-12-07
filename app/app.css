@@ -150,3 +150,15 @@ td.rushjob {
 td.scores {
     padding-right: 7px;
 }
+span.strike {
+    text-decoration: line-through;
+}
+span.green {
+    color: olivedrab;
+}
+span.grey {
+    color: darkgray;
+}
+span.blue {
+    color: steelblue;
+}
