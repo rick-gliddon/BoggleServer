@@ -5,57 +5,66 @@
                 
        return {
            restrict: 'E',
-           scope: {
-               nextstate: '&',
-               player: '='
-           },
+           scope: {},
            templateUrl: 'title/title.html',
            controller: 'BoggleTitleController',
            controllerAs: 'titleCtrl'
-       } 
+       }; 
     })
-    .controller('BoggleTitleController', ['$scope', '$http', '$window', 'signOnBoggle', 
-        function($scope, $http, $window, signOnBoggle) {
-            var tc = this;
-            
-            $http.get('/champboggle2015/api/identify')
-                    .success(function(data) {
-                        $scope.player = data;
-                    })
-                    .error(function(data, status) {
-                        if (status === 401) {
-                            $scope.player = 'guest';
-                        } else {
-                            console.log('Error identifying user, status: '
-                                    + status + ', msg: ' + data);
-                        }
-                    });
-    
-            tc.startGame = function() {
-                $scope.nextstate();
-            };
+    .controller('BoggleTitleController',
+    ['$scope', '$http', '$window', 'gameStateService', 'signOnBoggle', 
+    function($scope, $http, $window, gameStateService, signOnBoggle) {
+        var tc = this;
+        
+        var player;
 
-            tc.showSignOnBoggle = function() {
-                signOnBoggle.show().then(function(newPlayer) {
-                    $scope.player = newPlayer;
+        gameStateService.addCallback(
+                gameStateService.states.TITLE, titleState);
+
+        $http.get('/champboggle2015/api/identify')
+                .success(function(playerId) {
+                    player = playerId;
+                })
+                .error(function(data, status) {
+                    if (status === 401) {
+                        player = 'guest';
+                    } else {
+                        console.log('Error identifying user, status: '
+                                + status + ', msg: ' + data);
+                    }
                 });
-            };
 
-            tc.isLoggedIn = function() {
-                return $scope.player && $scope.player !== 'guest';
+        tc.startGame = function() {
+            gameStateService.nextState({player: player});
+        };
+
+        tc.showSignOnBoggle = function() {
+            signOnBoggle.show().then(function(newPlayer) {
+                player = newPlayer;
+            });
+        };
+
+        tc.isLoggedIn = function() {
+            return player && player !== 'guest';
+        };
+
+        tc.signOut = function() {
+            delete $window.sessionStorage.token;
+            player = 'guest';
+        };
+
+        tc.capitalisePlayer = function() {
+            if (!player) {
+                return '';
             }
-            
-            tc.signOut = function() {
-                delete $window.sessionStorage.token;
-                $scope.player = 'guest';
+            return player.charAt(0).toUpperCase()
+                    + player.substring(1);
+        };
+        
+        function titleState(context) {
+            if (context && context.player) {
+                player = context.player;
             }
-            
-            tc.capitalisePlayer = function() {
-                if (!$scope.player) {
-                    return '';
-                }
-                return $scope.player.charAt(0).toUpperCase()
-                        + $scope.player.substring(1);
-            }
-        }]);
+        }
+    }]);
 })();

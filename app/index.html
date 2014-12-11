@@ -4,19 +4,15 @@
         <link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="app.css"/>
     </head>
-    <body ng-controller="StateController as stateCtrl">
-        <div ng-show="stateCtrl.isTitleState()">
-            <boggle-title nextstate="stateCtrl.nextState()"
-                          player="player"></boggle-title>
+    <body ng-controller="ViewController as viewCtrl">
+        <div ng-show="viewCtrl.isTitleState()">
+            <boggle-title></boggle-title>
         </div>
-        <div ng-show="stateCtrl.isPlayState()">
-            <boggle-play nextstate="stateCtrl.nextState()"
-                         letters="letters"
-                         checkinpoint="checkinPoint"></boggle-play>
+        <div ng-show="viewCtrl.isPlayState()">
+            <boggle-play></boggle-play>
         </div>
-        <div ng-show="stateCtrl.isResultState()">
-            <boggle-results nextstate="stateCtrl.nextState()"
-                            player="player"></boggle-results>
+        <div ng-show="viewCtrl.isResultsState()">
+            <boggle-results></boggle-results>
         </div>
 
         <script type="text/javascript" src="libs/angular.js"></script>

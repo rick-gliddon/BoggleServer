@@ -3,18 +3,18 @@
     .directive('boggleResults', function() {
         return {
             restrict: 'E',
-            scope: {
-                nextstate: '&',
-                player: '='
-            },
+            scope: {},
             templateUrl: 'results/results.html',
             controller: 'BoggleResultsController',
             controllerAs: 'resultsCtrl'
         };
     })
-    .controller('BoggleResultsController', ['gameResults', '$scope', function(gameResults, $scope) {
+    .controller('BoggleResultsController',
+    ['gameStateService', '$scope', 
+    function(gameStateService, $scope) {
         
         var rc = this;
+        var player;
 
         rc.OUTCOMES = {
             YOU_WON : "You Won",
@@ -30,7 +30,8 @@
         rc.singlePlayer = true;
         rc.outcome = rc.OUTCOMES.PARTICIPATED;
         
-        gameResults.addCallback(updateResults);
+        gameStateService.addCallback(
+                gameStateService.states.RESULTS, updateResults);
         
         rc.guessedByOthers = function(word) {
             return word.players.length > 0;
@@ -40,8 +41,20 @@
             return word.players.join(" + ");
         };
         
-        function updateResults(matrix, foundWords, finalResults) {
-            rc.matrix = matrix;
+        rc.startGame = function() {
+            gameStateService.jumpStart({player: player});
+        };
+        
+        rc.mainMenu = function() {
+            gameStateService.quit({player: player});
+        };
+        
+        function updateResults(context) {
+            var foundWords = context.wordList;
+            var finalResults = context.finalResults;
+            rc.matrix = context.matrix;
+            player = context.player;
+            
             console.log("Updating results");
             
             // Create the player scores
@@ -58,7 +71,7 @@
             });
             // Determine the outcome and single / muliplayer
             rc.singlePlayer = rc.playerScores.length === 1;
-            if (!rc.singlePlayer && $scope.player === rc.playerScores[0].player) {
+            if (!rc.singlePlayer && player === rc.playerScores[0].player) {
                 if (rc.playerScores[0].score > rc.playerScores[1].score) {
                     rc.outcome = rc.OUTCOMES.YOU_WON;
                 } else {
@@ -69,7 +82,7 @@
                 var firstScore = rc.playerScores[0].score;
                 for (var i = 1; i < rc.playerScores.length; i++) {
                     if (rc.playerScores[i].score === firstScore) {
-                        if (rc.playerScores[i].player === $scope.player) {
+                        if (rc.playerScores[i].player === player) {
                             rc.outcome = rc.OUTCOMES.YOU_DREW;
                         }
                     } else {
@@ -89,7 +102,7 @@
                 var myWord = false;
                 resultWord.pls.forEach(function(playerId) {
                     var currentPlayer = finalResults.pls[playerId];
-                    if (currentPlayer === $scope.player) {
+                    if (currentPlayer === player) {
                         myWord = true;
                     } else {
                         newWord.players.push(currentPlayer);

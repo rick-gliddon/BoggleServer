@@ -5,19 +5,21 @@
         return {
            
             restrict: 'E',
-            scope: {
-                nextstate: '&',
-                letters: '=',
-                checkinpoint: '='
-            },
+            scope: {},
             templateUrl: 'play/play.html',
             controller: 'BogglePlayController',
             controllerAs: 'playCtrl'
         }            
     })
-    .controller('BogglePlayController', ['$rootScope', '$scope', '$http', '$interval', '$window', 'gameResults',
-      function playController($rootScope, $scope, $http, $interval, $window, gameResults) {
+    .controller('BogglePlayController', 
+    ['$rootScope', '$scope', '$http', '$interval', '$window', 'gameStateService',
+    function playController($rootScope, $scope, $http, $interval, $window, gameStateService) {
         var pc = this;
+        var player;
+        var checkinPoint;
+        
+        gameStateService.addCallback(
+                gameStateService.states.PLAY, playState);
 
 //        pc.GAME_DURATION = 180000;
         pc.GAME_DURATION = 30000;
@@ -123,7 +125,7 @@
         
         function postWords() {
             var checkinWords = { words: pc.wordList };
-            $http.post('/champboggle2015/api/checkin/' + $scope.checkinpoint, checkinWords)
+            $http.post('/champboggle2015/api/checkin/' + checkinPoint, checkinWords)
                 .error(function() {
                     $window.alert('Error posting word list');
                 })
@@ -141,9 +143,14 @@
                         }
                     } else {
                         startPollTime = null;
-                        gameResults.notify(pc.matrix, pc.wordList, finalResults);
                         console.log('Success, got final result');
-                        $scope.nextstate();
+                        var resultsContext = {
+                           player: player,
+                           matrix: pc.matrix,
+                           wordList: pc.wordList,
+                           finalResults: finalResults
+                        };
+                        gameStateService.nextState(resultsContext);
                     }
                 });
         }
@@ -185,20 +192,20 @@
           return isAdjacent;
         }
 
-        $scope.$watch('letters', function(newValue, oldValue) {
-          if (!newValue) {
-              return;
-          }
-          var newMatrix = [];
-          for (var i = 0; i < 4; i++) {
-            newMatrix[i] = [];
-            for (var j = 0; j < 4; j++) {
-              newMatrix[i][j] = new Die($scope.letters[i * 4 + j]);
+        function playState(context) {
+            player = context.player;
+            checkinPoint = context.checkinPoint;
+          
+            var newMatrix = [];
+            for (var i = 0; i < 4; i++) {
+              newMatrix[i] = [];
+              for (var j = 0; j < 4; j++) {
+                newMatrix[i][j] = new Die(context.letters[i * 4 + j]);
+              }
             }
-          }
-          pc.matrix = newMatrix;
-          playTimer = $interval(progressPlay, 1000);
-        });
+            pc.matrix = newMatrix;
+            playTimer = $interval(progressPlay, 1000);
+        }
 
         function Die(letter) {
     //      this.letter = String.fromCharCode(Math.floor(Math.random() * 26) + 65);
