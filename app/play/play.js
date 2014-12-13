@@ -19,7 +19,7 @@
         var checkinPoint;
         
         gameStateService.addCallback(
-                gameStateService.states.PLAY, playState);
+                gameStateService.states.PLAY, startPlay);
 
 //        pc.GAME_DURATION = 180000;
         pc.GAME_DURATION = 30000;
@@ -34,13 +34,13 @@
         pc.fontSize=Math.floor(pc.diceWidth * 0.75);
         pc.uFontSize=Math.floor(pc.diceWidth * 0.46);
 
-        pc.matrix = [];
-        pc.coords = {};
+        pc.matrix;
+        pc.coords;
         pc.formingDice = [];
-        pc.wordList = [];
+        pc.wordList;
 
-        pc.timePlaying = 0;
-        pc.gameProgress = 0;
+        pc.timePlaying;
+        pc.gameProgress;
         
         pc.uStyle = {
           'line-height' : pc.diceWidth + 'px',
@@ -50,7 +50,6 @@
         var startPlayTime;
         var playTimer;
         var startPollTime;
-        var pollTimer;
 
         pc.getFormingWord = function() {
           return pc.formingDice
@@ -67,6 +66,10 @@
           if (!isGameInPlay()) {
             return;
           }
+          addWordImpl();
+        };
+        
+        function addWordImpl() {
           var word = pc.getFormingWord();
           if (word.length < 3) {
             // word too small.  Alert?
@@ -80,7 +83,7 @@
             pc.formingDice[0].selected = false;
             pc.formingDice.shift();
           }
-        };
+        }
 
         pc.click = function(die) {
           if (!isGameInPlay()) {
@@ -113,9 +116,11 @@
           pc.timePlaying = currentTime - startPlayTime;
           pc.gameProgress = Math.floor(pc.timePlaying * 100 / pc.GAME_DURATION);
           if (!isGameInPlay()) {
-            $interval.cancel(playTimer);
-            startPlayTime = null;
-            postWords();
+              if (pc.getFormingWord().length > 2) {
+                  addWordImpl();
+              }
+              $interval.cancel(playTimer);
+              postWords();
           }
         }
 
@@ -142,7 +147,6 @@
                             $window.alert("Boggle Server has taken too long to respond");
                         }
                     } else {
-                        startPollTime = null;
                         console.log('Success, got final result');
                         var resultsContext = {
                            player: player,
@@ -150,9 +154,16 @@
                            wordList: pc.wordList,
                            finalResults: finalResults
                         };
+                        reset();
                         gameStateService.nextState(resultsContext);
                     }
                 });
+        }
+        
+        function reset() {
+            startPollTime = null;
+            startPlayTime = null;
+            pc.gameProgress = 0;
         }
 
         function isAdjacent(die) {
@@ -192,7 +203,8 @@
           return isAdjacent;
         }
 
-        function playState(context) {
+        function startPlay(context) {
+            initialise();
             player = context.player;
             checkinPoint = context.checkinPoint;
           
@@ -205,6 +217,20 @@
             }
             pc.matrix = newMatrix;
             playTimer = $interval(progressPlay, 1000);
+        }
+        
+        function initialise() {
+            pc.matrix = [];
+            pc.coords = {};
+            pc.formingDice = [];
+            pc.wordList = [];
+
+            pc.timePlaying = 0;
+            pc.gameProgress = 0;
+
+            startPlayTime = null;
+            playTimer = null;
+            startPollTime = null;
         }
 
         function Die(letter) {

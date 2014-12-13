@@ -1,6 +1,6 @@
 (function() {
 
-  var app = angular.module('bogglesim',['state', 'title', 'play', 'results']);
+  var app = angular.module('bogglesim',['title', 'play', 'results']);
 
   app.factory('authInterceptor', function ($rootScope, $q, $window) {
     return {
@@ -20,35 +20,6 @@
     };
   });
 
-//  app.factory('gameResults', function() {
-//      var callbackList = [];
-//
-//      function addCallback(newCallback) {
-//          if (callbackList.indexOf(newCallback) < 0) {
-//              callbackList.push(newCallback);
-//          }
-//      }
-//
-//      function removeCallback(remCallback) {
-//          var index = callbackList.indexOf(remCallback);
-//          if (index >= 0) {
-//              callbackList.splice(index, 1);
-//          }
-//      }
-//
-//      function notify(matrix, playerWords, finalResults) {
-//          callbackList.forEach(function(callback) {
-//              callback(matrix, playerWords, finalResults);
-//          });
-//      }
-//
-//      return {
-//          addCallback : addCallback,
-//          removeCallback : removeCallback,
-//          notify : notify
-//      };
-//  });
-
   app.factory('gameStateService', function() {
       var callbackList = [];
       var states = {
@@ -62,18 +33,8 @@
 
       function addCallback(state, newCallback) {
           var callbackObj = {state: state, callback: newCallback};
-//          if (indexOf(callbackList, callbackObj) < 0) {
-              callbackList.push(callbackObj);
-//          }
+          callbackList.push(callbackObj);
       }
-
-//      function removeCallback(state, remCallback) {
-//          var callbackObj = {state: state, callback: remCallback};
-//          var index = indexOf(callbackList, callbackObj);
-//          if (index >= 0) {
-//              callbackList.splice(index, 1);
-//          }
-//      }
 
       function nextState(context) {
           advanceState();
@@ -116,7 +77,6 @@
       return {
           states : states,
           addCallback : addCallback,
-//          removeCallback : removeCallback,
           nextState : nextState,
           jumpStart : jumpStart,
           quit : quit

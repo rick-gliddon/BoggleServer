@@ -23,12 +23,21 @@
             YOU_LOST : "You came last"
         };
         
-        rc.matrix = [];
-        rc.myWords = [];
-        rc.missedWords = [];
-        rc.playerScores = [];
-        rc.singlePlayer = true;
-        rc.outcome = rc.OUTCOMES.PARTICIPATED;
+        rc.matrix;
+        rc.myWords;
+        rc.missedWords;
+        rc.playerScores;
+        rc.singlePlayer;
+        rc.outcome;
+        
+        function initialise() {
+            rc.matrix = [];
+            rc.myWords = [];
+            rc.missedWords = [];
+            rc.playerScores = [];
+            rc.singlePlayer = true;
+            rc.outcome = rc.OUTCOMES.PARTICIPATED;
+        }
         
         gameStateService.addCallback(
                 gameStateService.states.RESULTS, updateResults);
@@ -50,6 +59,7 @@
         };
         
         function updateResults(context) {
+            initialise();
             var foundWords = context.wordList;
             var finalResults = context.finalResults;
             rc.matrix = context.matrix;

@@ -32,6 +32,12 @@
         Your score: {{resultsCtrl.playerScores[0].score}}
     </h4>
     
+    <div class="btn btn-default" ng-click="resultsCtrl.startGame()">
+        New Game</div>
+    
+    <div class="btn btn-default" ng-click="resultsCtrl.mainMenu()">
+        Main Menu</div>
+    
     <h4>Your words:</h4>
     <div ng-repeat="word in resultsCtrl.myWords">
         <span ng-class="{strike: !word.isActuallyAWord, green: word.winner, grey: !word.winner}">
