@@ -4,7 +4,7 @@
         <link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="app.css"/>
     </head>
-    <body ng-controller="ViewController as viewCtrl">
+    <body ng-controller="ViewController as viewCtrl" ng-keydown="viewCtrl.keyTyped($event)">
         <div ng-show="viewCtrl.isTitleState()">
             <boggle-title></boggle-title>
         </div>

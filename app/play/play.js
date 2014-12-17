@@ -12,11 +12,12 @@
         }            
     })
     .controller('BogglePlayController', 
-    ['$rootScope', '$scope', '$http', '$interval', '$window', 'gameStateService',
-    function playController($rootScope, $scope, $http, $interval, $window, gameStateService) {
+    ['$rootScope', '$scope', '$http', '$interval', '$window', 'gameStateService', 'keyTypedService',
+    function playController($rootScope, $scope, $http, $interval, $window, gameStateService, keyTypedService) {
         var pc = this;
         var player;
         var checkinPoint;
+        var keyTypedServiceId;
         
         gameStateService.addCallback(
                 gameStateService.states.PLAY, startPlay);
@@ -104,10 +105,6 @@
           }
         };
 
-        pc.keyTyped = function($event) {
-          console.log("Key typed: " + $event.keyCode);
-        };
-
         function progressPlay() {
           if (!startPlayTime) {
             startPlayTime = new Date();
@@ -116,6 +113,7 @@
           pc.timePlaying = currentTime - startPlayTime;
           pc.gameProgress = Math.floor(pc.timePlaying * 100 / pc.GAME_DURATION);
           if (!isGameInPlay()) {
+              keyTypedService.removeCallback(keyTypedServiceId);
               if (pc.getFormingWord().length > 2) {
                   addWordImpl();
               }
@@ -207,6 +205,7 @@
             initialise();
             player = context.player;
             checkinPoint = context.checkinPoint;
+            keyTypedServiceId = keyTypedService.addCallback(keyTyped);
           
             var newMatrix = [];
             for (var i = 0; i < 4; i++) {
@@ -217,6 +216,16 @@
             }
             pc.matrix = newMatrix;
             playTimer = $interval(progressPlay, 1000);
+        }
+        
+        function keyTyped(keyCode) {
+            if (keyCode === 8) {
+                console.log("DEL");
+            } else if (keyCode === 13) {
+                console.log("ENTER");
+            } else if (keyCode >= 65 && keyCode <= 90) {
+                console.log(String.fromCharCode(keyCode));
+            }
         }
         
         function initialise() {

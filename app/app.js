@@ -82,6 +82,42 @@
           quit : quit
       };
   });
+
+  app.factory('keyTypedService', function() {
+      var callbackList = [];
+      var currentId = 0;
+      
+      function addCallback(newCallback) {
+          var callbackObj = {
+              id: currentId++,
+              callback: newCallback
+          };
+          callbackList.push(callbackObj);
+          return callbackObj.id;
+      }
+      
+      function removeCallback(id) {
+          var i;
+          for (i = 0; i < callbackList.length; i++) {
+              if (callbackList[i].id === id) {
+                  break;
+              }
+          }
+          callbackList.splice(i , 1);
+      }
+      
+      function notify(keyCode) {
+          callbackList.forEach(function(callbackObj) {
+              callbackObj.callback(keyCode);
+          });
+      }
+      
+      return {
+          addCallback: addCallback,
+          removeCallback: removeCallback,
+          notify: notify
+      };
+  });
   
   app.service('requestPlayService',
   ['$http', 'gameStateService', 
@@ -108,8 +144,8 @@
   }]);
   
   app.controller('ViewController', 
-  ['gameStateService', 'requestPlayService',
-  function(gameStateService, requestPlayService) {
+  ['gameStateService', 'requestPlayService', 'keyTypedService',
+  function(gameStateService, requestPlayService, keyTypedService) {
       var vc = this;
       var currentState = gameStateService.states.TITLE;
       
@@ -128,6 +164,13 @@
       };
       vc.isResultsState = function() {
           return isState(gameStateService.states.RESULTS);
+      };
+
+      vc.keyTyped = function($event) {
+          if ($event.keyCode === 8) {
+              $event.preventDefault();
+          }
+          keyTypedService.notify($event.keyCode);
       };
       
       function isState(state) {
