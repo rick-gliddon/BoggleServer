@@ -14,6 +14,9 @@
     .controller('BogglePlayController', 
     ['$rootScope', '$scope', '$http', '$interval', '$window', 'gameStateService', 'keyTypedService',
     function playController($rootScope, $scope, $http, $interval, $window, gameStateService, keyTypedService) {
+        var BACKSPACE = 8;
+        var ENTER = 13;
+        
         var pc = this;
         var player;
         var checkinPoint;
@@ -39,6 +42,8 @@
         pc.coords;
         pc.formingDice = [];
         pc.wordList;
+        
+        var letterCoords;
 
         pc.timePlaying;
         pc.gameProgress;
@@ -169,36 +174,13 @@
             return true;
           }
           var lastDie = pc.formingDice[pc.formingDice.length - 1];
-          var found = false;
-          var i, j;
-          for (i = 0; i < pc.matrix.length; i++) {
-            for (j = 0; j < pc.matrix[i].length; j++) {
-              if (pc.matrix[i][j] === lastDie) {
-                found = true;
-                break;
-              }
-            }
-            if (found) {
-              break;
-            }
-          }
-
-          var isAdjacent = false;
-          if (found) {
-            for (var di = -1; !isAdjacent && di <= 1; di++) {
-              for (var dj = -1; !isAdjacent && dj <= 1; dj++) {
-                if (di === 0 && dj === 0) {
-                  continue;
-                }
-                var posi = i + di;
-                var posj = j + dj;
-                isAdjacent = posi >= 0 && posi < pc.matrix.length
-                    && posj >= 0 && posj < pc.matrix[posi].length
-                    && die === pc.matrix[posi][posj];
-              }
-            }
-          }
-          return isAdjacent;
+          var lasti = Number(lastDie.id[0]);
+          var lastj = Number(lastDie.id[1]);
+          var newi = Number(die.id[0]);
+          var newj = Number(die.id[1]);
+          
+          return Math.abs(newi - lasti) <= 1 
+              && Math.abs(newj - lastj) <= 1;
         }
 
         function startPlay(context) {
@@ -208,10 +190,17 @@
             keyTypedServiceId = keyTypedService.addCallback(keyTyped);
           
             var newMatrix = [];
+            var letter;
+            var die;
+            var id;
             for (var i = 0; i < 4; i++) {
               newMatrix[i] = [];
               for (var j = 0; j < 4; j++) {
-                newMatrix[i][j] = new Die(context.letters[i * 4 + j]);
+                letter = context.letters[i * 4 + j];
+                id = i.toString() + j.toString();
+                die = new Die(id, letter);
+                newMatrix[i][j] = die;
+                addLetterCoords(letter, i , j);
               }
             }
             pc.matrix = newMatrix;
@@ -226,6 +215,11 @@
             } else if (keyCode >= 65 && keyCode <= 90) {
                 console.log(String.fromCharCode(keyCode));
             }
+            // If ENTER, add word if length > 2
+            // If BACKSPACE, delete last die if length > 0
+            // Get list of coords for letter
+            // Iterate over list, if any are adjacent to last letter, add die
+            //   Might have to add equality checking to adjacent.  Depends how adjacent letter is done
         }
         
         function initialise() {
@@ -233,6 +227,7 @@
             pc.coords = {};
             pc.formingDice = [];
             pc.wordList = [];
+            letterCoords = {};
 
             pc.timePlaying = 0;
             pc.gameProgress = 0;
@@ -241,9 +236,17 @@
             playTimer = null;
             startPollTime = null;
         }
+        
+        function addLetterCoords(letter, i, j) {
+            if (!letterCoords[letter]) {
+                letterCoords[letter] = [];
+            }
+            letterCoords[letter].push({i:i, j:j});
+        }
 
-        function Die(letter) {
+        function Die(id, letter) {
     //      this.letter = String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+          this.id = id;
           this.letter = letter.toUpperCase();
           this.rotation = Math.floor(Math.random() * 4) * 90;
           this.rplusw = this.rotation + Math.floor(Math.random() * 7) - 3;
