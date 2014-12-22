@@ -14,8 +14,10 @@
     .controller('BogglePlayController', 
     ['$rootScope', '$scope', '$http', '$interval', '$window', 'gameStateService', 'keyTypedService',
     function playController($rootScope, $scope, $http, $interval, $window, gameStateService, keyTypedService) {
-        var BACKSPACE = 8;
-        var ENTER = 13;
+        var KEY_BACKSPACE = 8;
+        var KEY_ENTER = 13;
+        var KEY_A = 65;
+        var KEY_Z = 90;
         
         var pc = this;
         var player;
@@ -25,8 +27,8 @@
         gameStateService.addCallback(
                 gameStateService.states.PLAY, startPlay);
 
-//        pc.GAME_DURATION = 180000;
-        pc.GAME_DURATION = 30000;
+        pc.GAME_DURATION = 180000;
+//        pc.GAME_DURATION = 30000;
         pc.MAX_POLL_TIME = 20000;
 
         var width = $window.innerWidth;
@@ -169,18 +171,34 @@
             pc.gameProgress = 0;
         }
 
-        function isAdjacent(die) {
-          if (!pc.formingDice.length) {
-            return true;
-          }
-          var lastDie = pc.formingDice[pc.formingDice.length - 1];
-          var lasti = Number(lastDie.id[0]);
-          var lastj = Number(lastDie.id[1]);
-          var newi = Number(die.id[0]);
-          var newj = Number(die.id[1]);
+        function isAdjacent(die, diceList) {
+            diceList = diceList || pc.formingDice;
+            if (!diceList.length) {
+                return true;
+            }
+            var lastDie = diceList[diceList.length - 1];
+            // TODO Make id an object, i,j
+            var lasti = Number(lastDie.id[0]);
+            var lastj = Number(lastDie.id[1]);
+            var newi = Number(die.id[0]);
+            var newj = Number(die.id[1]);
           
-          return Math.abs(newi - lasti) <= 1 
-              && Math.abs(newj - lastj) <= 1;
+            return Math.abs(newi - lasti) <= 1 
+                && Math.abs(newj - lastj) <= 1;
+        }
+        
+        function getAdjacentDie(coordsList, diceList) {
+            if (coordsList.length === 0) {
+                return null;
+            }
+            var die = pc.matrix[coordsList[0].i][coordsList[0].j];
+            if (diceList.indexOf(die) >= 0) {
+                return getAdjacentDie(coordsList.slice(1), diceList);
+            }
+            if (isAdjacent(die, diceList)) {
+                return die;
+            }
+            return getAdjacentDie(coordsList.slice(1), diceList);
         }
 
         function startPlay(context) {
@@ -208,18 +226,91 @@
         }
         
         function keyTyped(keyCode) {
-            if (keyCode === 8) {
-                console.log("DEL");
-            } else if (keyCode === 13) {
-                console.log("ENTER");
-            } else if (keyCode >= 65 && keyCode <= 90) {
-                console.log(String.fromCharCode(keyCode));
+            if (keyCode === KEY_BACKSPACE) {
+                if (pc.formingDice.length > 0) {
+                    pc.formingDice[pc.formingDice.length - 1].selected = false;
+                    pc.formingDice.pop();
+                }
+            } else if (keyCode === KEY_ENTER) {
+                if (pc.formingDice.length > 2) {
+                    pc.addWord();
+                }
+            } else if (keyCode >= KEY_A && keyCode <= KEY_Z) {
+                var letter = String.fromCharCode(keyCode).toLowerCase();
+                var diceActions = addLetterList(
+                        pc.formingDice.slice(), [letter]);
+                if (diceActions[diceActions.length - 1].added) {
+                    diceActions.forEach(function(dieAction) {
+                        if (dieAction.added) {
+                            dieAction.die.selected = true;
+                            pc.formingDice.push(dieAction.die);
+                        } else {
+                            dieAction.die.selected = false;
+                            pc.formingDice.pop();
+                        }
+                    });
+                }
+//                var coordsList = letterCoords[letter];
+//                if (coordsList) {
+//                    if (pc.formingDice.length === 0) {
+//                        var die = pc.matrix[coordsList[0].i][coordsList[0].j];
+//                        // TODO Centralise, shared with pc.click
+//                        die.selected = true;
+//                        pc.formingDice.push(die);
+//                    } else {
+//                        var die = getAdjacentDie(coordsList);
+//                        if (die) {
+//                            // TODO Here it is again
+//                            die.selected = true;
+//                            pc.formingDice.push(die);
+//                        }
+//                    }
+//                }
             }
-            // If ENTER, add word if length > 2
-            // If BACKSPACE, delete last die if length > 0
             // Get list of coords for letter
             // Iterate over list, if any are adjacent to last letter, add die
             //   Might have to add equality checking to adjacent.  Depends how adjacent letter is done
+        }
+        
+        function addLetterList(diceList, letterList) {
+            if (letterList.length === 0) {
+                return [];
+            }
+            var letter = letterList[0];
+            var die = null;
+            var coordsList = letterCoords[letter];
+            // TODO This isn't quite right.  Need a way to check last element added
+            // and move to the next coords on failure.
+            // Need new getAdjacentDie.  This is the only caller
+            // getAdjacentDie needs diceList and letterList also.
+            // Might not be named getAdjacentDie anymore...
+            if (coordsList) {
+                if (diceList.length === 0) {
+                    die = pc.matrix[coordsList[0].i][coordsList[0].j];
+                    // TODO diceList2 = diceList.slice(); diceList2.push(die)
+                    diceList.push(die);
+                } else {
+                    die = getAdjacentDie(coordsList, diceList);
+                    if (die) {
+                        diceList.push(die);
+                    }
+                }
+            }
+            if (die) {
+                return [{die: die, added: true}]
+                        .concat(addLetterList(diceList.slice(), 
+                                              letterList.slice(1)));
+            } else {
+                if (diceList.length === 0) {
+                    return [];
+                } else {
+                    die = diceList[diceList.length - 1];
+                    letterList.unshift(die.letter.toLowerCase());
+                    return [{die: die, added: false}]
+                            .concat(addLetterList(diceList.slice(0, diceList.length - 1),
+                                                  letterList.slice(0)));
+                }
+            }
         }
         
         function initialise() {

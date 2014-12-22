@@ -167,7 +167,7 @@
       };
 
       vc.keyTyped = function($event) {
-          if ($event.keyCode === 8) {
+          if ($event.keyCode === 8 && vc.isPlayState()) {
               $event.preventDefault();
           }
           keyTypedService.notify($event.keyCode);
