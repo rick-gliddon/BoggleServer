@@ -186,20 +186,6 @@
             return Math.abs(newi - lasti) <= 1 
                 && Math.abs(newj - lastj) <= 1;
         }
-        
-        function getAdjacentDie(coordsList, diceList) {
-            if (coordsList.length === 0) {
-                return null;
-            }
-            var die = pc.matrix[coordsList[0].i][coordsList[0].j];
-            if (diceList.indexOf(die) >= 0) {
-                return getAdjacentDie(coordsList.slice(1), diceList);
-            }
-            if (isAdjacent(die, diceList)) {
-                return die;
-            }
-            return getAdjacentDie(coordsList.slice(1), diceList);
-        }
 
         function startPlay(context) {
             initialise();
@@ -237,9 +223,11 @@
                 }
             } else if (keyCode >= KEY_A && keyCode <= KEY_Z) {
                 var letter = String.fromCharCode(keyCode).toLowerCase();
-                var diceActions = addLetterList(
+                var diceActions = addLetterListNoBackout(
                         pc.formingDice.slice(), [letter]);
-                if (diceActions[diceActions.length - 1].added) {
+                if (diceActions.length > 0 
+                        && diceActions[diceActions.length - 1].success) {
+                    diceActions.pop(); // remove the success element
                     diceActions.forEach(function(dieAction) {
                         if (dieAction.added) {
                             dieAction.die.selected = true;
@@ -249,67 +237,88 @@
                             pc.formingDice.pop();
                         }
                     });
+                } else {
+                    var letterList = [];
+                    diceActions = [];
+                    pc.formingDice.forEach(function(die) {
+                        diceActions.push({die: die, added: false});
+                        letterList.push(die.letter.toLowerCase());
+                    });
+                    letterList.push(letter);
+                    // TODO Need to centralise this code.  True duplication.
+                    diceActions = diceActions.concat(
+                            addLetterListNoBackout([], letterList));
+                    if (diceActions.length > 0 
+                            && diceActions[diceActions.length - 1].success) {
+                        diceActions.pop(); // remove the success element
+                        diceActions.forEach(function(dieAction) {
+                            if (dieAction.added) {
+                                dieAction.die.selected = true;
+                                pc.formingDice.push(dieAction.die);
+                            } else {
+                                dieAction.die.selected = false;
+                                pc.formingDice.pop();
+                            }
+                        });
+                    }
+                    
                 }
-//                var coordsList = letterCoords[letter];
-//                if (coordsList) {
-//                    if (pc.formingDice.length === 0) {
-//                        var die = pc.matrix[coordsList[0].i][coordsList[0].j];
-//                        // TODO Centralise, shared with pc.click
-//                        die.selected = true;
-//                        pc.formingDice.push(die);
-//                    } else {
-//                        var die = getAdjacentDie(coordsList);
-//                        if (die) {
-//                            // TODO Here it is again
-//                            die.selected = true;
-//                            pc.formingDice.push(die);
-//                        }
-//                    }
-//                }
             }
-            // Get list of coords for letter
-            // Iterate over list, if any are adjacent to last letter, add die
-            //   Might have to add equality checking to adjacent.  Depends how adjacent letter is done
         }
         
-        function addLetterList(diceList, letterList) {
-            if (letterList.length === 0) {
+        // TODO Rename method
+        function addAdjacentDieNoBackout(coordsList, diceList, letterList) {
+            if (coordsList.length === 0) {
+                // Run out of coordinates.  Return empty list.
                 return [];
             }
+            // Get the die from the head coords
+            var die = pc.matrix[coordsList[0].i][coordsList[0].j];
+            // If the die is already selected, try the next coords
+            if (die.selected) {
+                return addAdjacentDieNoBackout(
+                        coordsList.slice(1), diceList, letterList);
+            }
+            // If the die is adjacent to the last die in the dice list then call
+            // addLetterListNoBackout to continue evaluating letters.
+            if (isAdjacent(die, diceList)) {
+                var diceListCopy = diceList.slice();
+                diceListCopy.push(die);
+                var diceActions = [{die: die, added: true}]
+                                   .concat(addLetterListNoBackout(diceListCopy, 
+                                                         letterList.slice(1)));
+                
+                // If evaluation was successful, return the dice actions.
+                // Otherwise try the next coords
+                if (diceActions[diceActions.length - 1].success) {
+                    return diceActions;
+                } else {
+                    return addAdjacentDieNoBackout(
+                            coordsList.slice(1), diceList, letterList);
+                }
+            }
+            // Coords were not adjacent so try the next coords
+            return addAdjacentDieNoBackout(coordsList.slice(1), diceList, letterList);
+        }
+        
+        // TODO Rename method
+        function addLetterListNoBackout(diceList, letterList) {
+            // If we've depleted the letter list then, success!
+            if (letterList.length === 0) {
+                return [{success: true}];
+            }
+            // Get the next letter and coordinates of the occurences of that
+            // letter
             var letter = letterList[0];
             var die = null;
             var coordsList = letterCoords[letter];
-            // TODO This isn't quite right.  Need a way to check last element added
-            // and move to the next coords on failure.
-            // Need new getAdjacentDie.  This is the only caller
-            // getAdjacentDie needs diceList and letterList also.
-            // Might not be named getAdjacentDie anymore...
+            
+            // If there are occurences of the letter then add the letters in
+            // the list using the coords list.
             if (coordsList) {
-                if (diceList.length === 0) {
-                    die = pc.matrix[coordsList[0].i][coordsList[0].j];
-                    // TODO diceList2 = diceList.slice(); diceList2.push(die)
-                    diceList.push(die);
-                } else {
-                    die = getAdjacentDie(coordsList, diceList);
-                    if (die) {
-                        diceList.push(die);
-                    }
-                }
-            }
-            if (die) {
-                return [{die: die, added: true}]
-                        .concat(addLetterList(diceList.slice(), 
-                                              letterList.slice(1)));
+                return addAdjacentDieNoBackout(coordsList, diceList, letterList);
             } else {
-                if (diceList.length === 0) {
-                    return [];
-                } else {
-                    die = diceList[diceList.length - 1];
-                    letterList.unshift(die.letter.toLowerCase());
-                    return [{die: die, added: false}]
-                            .concat(addLetterList(diceList.slice(0, diceList.length - 1),
-                                                  letterList.slice(0)));
-                }
+                return [];
             }
         }
         
