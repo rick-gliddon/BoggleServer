@@ -275,7 +275,8 @@
             // Get the die from the head coords
             var die = pc.matrix[coordsList[0].i][coordsList[0].j];
             // If the die is already selected, try the next coords
-            if (die.selected) {
+//            if (die.selected) {
+            if (diceList.indexOf(die) >= 0) {
                 return addAdjacentDieNoBackout(
                         coordsList.slice(1), diceList, letterList);
             }
