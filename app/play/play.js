@@ -212,15 +212,16 @@
         }
         
         function keyTyped(keyCode) {
+            
             if (keyCode === KEY_BACKSPACE) {
                 if (pc.formingDice.length > 0) {
                     pc.formingDice[pc.formingDice.length - 1].selected = false;
                     pc.formingDice.pop();
                 }
+                
             } else if (keyCode === KEY_ENTER) {
-                if (pc.formingDice.length > 2) {
-                    pc.addWord();
-                }
+                pc.addWord();
+                
             } else if (keyCode >= KEY_A && keyCode <= KEY_Z) {
                 var letter = String.fromCharCode(keyCode).toLowerCase();
                 var diceActions = addLetterListNoBackout(
