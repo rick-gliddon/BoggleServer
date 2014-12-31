@@ -29,6 +29,8 @@ module.exports = function() {
 			diceList.splice(index, 1);
 		}
 		return roll;
+//		return 'hoortlteynoiofqa';
+//		return 'hoortlteynfiofqa';
 	};
 
 	this.duplicateMatrix = function(source) {
@@ -39,12 +41,13 @@ module.exports = function() {
 		return dest;
 	};
 
-	this.solveFor = function(matrix, startPos, baseWord, visited, treeNode) {
+	this.solveFor = function(matrix, startPos, baseWord, visited, treeNode, isUOfQu) {
 		var solutionList = [];
 		var directions = [[-1, -1], [-1, 0], [-1, 1],
 		                  [ 0, -1],          [ 0, 1],
 		                  [ 1, -1], [ 1, 0], [ 1, 1]];
-		var formingWord = baseWord + matrix[startPos[0]][startPos[1]];
+                var letter = isUOfQu ? 'u' : matrix[startPos[0]][startPos[1]];
+		var formingWord = baseWord + letter;
 		if (treeNode.isWord) {
 			solutionList.push(formingWord);
 		}
@@ -65,6 +68,10 @@ module.exports = function() {
 			}
 			directions.shift();
 		}
+                if (letter === 'q' && treeNode.branches['u']) {
+                    var nextNode = treeNode.branches['u'];
+                    solutionList = solutionList.concat(this.solveFor(matrix, startPos, formingWord, this.duplicateMatrix(visited), nextNode, true));
+                }
 		return solutionList;
 	};
 
