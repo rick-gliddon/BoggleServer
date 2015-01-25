@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var BoggleEngine = require('../engine/boggleengine');
 var Game = require('../models/game');
 var Solution = require('../models/solution');
 var PlayerInGame = require('../models/playerInGame');
+var GameCreator = require('../util/gameCreator');
+var GameSolver = require('../util/gameSolver');
 
 var WAIT_FOR_PLAYERS_MILLISEC = 10000; // 10 seconds to join
 
@@ -41,25 +42,8 @@ router.get('/', function(req, res) {
 });
 
 function createNewGame(player, res) {
-    // Create the Boggle Engine!!!
-    var engine = new BoggleEngine();
-
-    var startTime = new Date();
-    var dd = pad(startTime.getDate());
-    var MM = pad(startTime.getMonth() + 1);
-    var yy = pad(startTime.getFullYear());
-    var hh = pad(startTime.getHours());
-    var mm = pad(startTime.getMinutes());
-    var ss = pad(startTime.getSeconds());
-    var mls = pad(startTime.getMilliseconds(), 3);
-
-    var roll = engine.rollDice();
-    var id = roll + yy + MM + dd + hh + mm + ss + mls;
-
-    var game = new Game(); // create a new instance of the Game model
-    game.gameId = id; 
-    game.letters = roll;
-    game.startTime = startTime;
+    
+    var game = new GameCreator().createGame();
 
     // save the game and send the response
     game.save(function(err) {
@@ -76,7 +60,7 @@ function createNewGame(player, res) {
 
         createPlayerInGame(player, id);
         
-        createSolution(game.letters, engine, id);
+        createSolution(game.letters, id);
     });
 }
 
@@ -92,21 +76,13 @@ function createPlayerInGame(player, gameId) {
     });
 }
 
-function createSolution(letters, boggleEngine, gameId) {
-    var solution = new Solution(); // Generate the solution
-    solution.gameId = gameId;
-    solution.words = boggleEngine.solve(letters, wordTree);
+function createSolution(letters, gameId) {
+    var solution = new GameSolver.createSolution(letters, gameId, wordTree);
     solution.save(function(err) {
         if (err) {
             console.log('Error creating solution: ' + err);
         }
     });
-}
-
-function pad(num, numDigits) {
-    numDigits = numDigits || 2;
-    var s = "00" + num;
-    return s.substr(s.length - numDigits);
 }
     
 module.exports = router;

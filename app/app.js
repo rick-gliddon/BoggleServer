@@ -128,7 +128,10 @@
               gameStateService.states.REQUEST_PLAY, requestPlayState);
       
       function requestPlayState(context) {
-          $http.get('/champboggle2015/api/startgame')
+          var url = context.player === 'guest' ?
+              '/champboggle2015/guest/startgame' :
+              '/champboggle2015/api/startgame';
+          $http.get(url)
             .success(function(data) {
                 var playContext = {
                     player: context.player,

@@ -135,7 +135,10 @@
         
         function postWords() {
             var checkinWords = { words: pc.wordList };
-            $http.post('/champboggle2015/api/checkin/' + checkinPoint, checkinWords)
+            var baseUrl = player === 'guest' ?
+                    '/champboggle2015/guest/checkin/' :
+                    '/champboggle2015/api/checkin/';        
+            $http.post(baseUrl + checkinPoint, checkinWords)
                 .error(function() {
                     $window.alert('Error posting word list');
                 })

@@ -4,6 +4,9 @@
 // =============================================================================
 
 // call the packages we need
+var args = process.argv;
+var live = !args[2] || args[2] !== 'dev';
+if (!live) console.log('DEVELOPMENT MODE');
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
@@ -12,11 +15,16 @@ var path       = require('path');
 var expressJwt = require('express-jwt');
 var jwt        = require('jsonwebtoken');
 var mongoose   = require('mongoose');
-mongoose.connect('mongodb://bogglebot:botboggle@ds051750.mongolab.com:51750/boggledb'); // connect to our database
+
+if (live) {
+    mongoose.connect('mongodb://bogglebot:botboggle@ds051750.mongolab.com:51750/boggledb'); // connect to our database
+}
 
 var authRoute = require('./server/routes/auth');
 var startgameRoute = require('./server/routes/startgame');
+var gueststartgameRoute = require('./server/routes/gueststartgame');
 var checkinRoute = require('./server/routes/checkin');
+var guestcheckinRoute = require('./server/routes/guestcheckin');
 
 var wordlist = require('./server/engine/wordlist');
 var WordTree = require('./server/engine/wordtree');
@@ -29,6 +37,7 @@ str = fs.readFileSync('./server/data/linux.words', 'utf8');
 words = wordlist.createWordList(str);
 wordTree.addWords(words);
 startgameRoute.setWordTree(wordTree);
+guestcheckinRoute.setWordTree(wordTree);
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -60,6 +69,8 @@ router.use('/auth', authRoute);
 router.get('/api/identify', function(req, res) {res.send(req.user.name);});
 router.use('/api/startgame', startgameRoute);
 router.use('/api/checkin', checkinRoute);
+router.use('/guest/startgame', gueststartgameRoute);
+router.use('/guest/checkin', guestcheckinRoute);
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /champboggle2015

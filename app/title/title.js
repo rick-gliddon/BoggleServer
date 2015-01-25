@@ -38,6 +38,10 @@
             gameStateService.nextState({player: player});
         };
 
+        tc.guestStartGame = function() {
+            gameStateService.nextState({player: 'guest'});
+        };
+
         tc.showSignOnBoggle = function() {
             signOnBoggle.show().then(function(newPlayer) {
                 player = newPlayer;

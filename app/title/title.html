@@ -8,10 +8,14 @@
 <div ng-hide="titleCtrl.isLoggedIn()">
     <div class="btn btn-default" ng-click="titleCtrl.showSignOnBoggle()">
         Player Login</div><br>
+    <div class="btn btn-default" ng-click="titleCtrl.guestStartGame()">
+        Start Solo Game</div><br>
 </div>
 <div ng-show="titleCtrl.isLoggedIn()">
     <div class="btn btn-default" ng-click="titleCtrl.startGame()">
-        Start Game</div><br>
+        Start Competitive Game</div><br>
+    <div class="btn btn-default" ng-click="titleCtrl.guestStartGame()">
+        Start Solo Game</div><br>
     <div class="btn btn-default" ng-click="titleCtrl.signOut()">
         Sign Out</div><br>
 </div>

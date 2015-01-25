@@ -4,7 +4,7 @@ var Game = require('../models/game');
 var PlayerInGame = require('../models/playerInGame');
 var Solution = require('../models/solution');
 var GameResult = require('../models/gameResult');
-var BoggleEngine = require('../engine/boggleengine');
+var GameSolver = require('../util/gameSolver');
   
 // check-in a word list
 // --------------------
@@ -58,7 +58,7 @@ function persistPlayerWordsAndProcess(player, playerWords, game, res) {
                         }
                     });
                 } else {
-                    getAllPlayerWordsAndProcess(player, game, res);
+                    getAllPlayerWordsAndProcess(game, res);
                 }
             } else {
                 console.log('Player ' + player + ' missing from game '
@@ -68,23 +68,7 @@ function persistPlayerWordsAndProcess(player, playerWords, game, res) {
         });
 }
 
-function getResultAndProcess(player, game, res) {
-    GameResult.find({'gid':game.gameId})
-        .exec(function handleGetResultCallback(err, gameResult) {
-            if (err) {
-                var errStr = "Error fetching result for gameId "
-                                + game.gameId + ": " + err;
-                console.log(errStr);
-                res.status(500).send(errStr);
-            } else if (gameResult) {
-                sendResult(gameResult, res);
-            } else {
-                getAllPlayerWordsAndProcess(player, game, res);
-            }
-    });
-}
-
-function getAllPlayerWordsAndProcess(player, game, res) {
+function getAllPlayerWordsAndProcess(game, res) {
     PlayerInGame.find({'gameId':game.gameId})
 //        .select('player words')
         .exec(function handleGetAllPlayersInGameResult(err, players) {
@@ -104,13 +88,13 @@ function getAllPlayerWordsAndProcess(player, game, res) {
                     res.status(202).send();
                     console.log('Found player with null words');
                 } else {
-                    createResultAndProcess(player, players, game, res);
+                    createResultAndProcess(players, game, res);
                 }
             }
         });
 }
     
-function createResultAndProcess(player, players, game, res) {
+function createResultAndProcess(players, game, res) {
     
     Solution.findOne({'gameId':game.gameId})
         .select('words')
@@ -123,40 +107,8 @@ function createResultAndProcess(player, players, game, res) {
                 
             } else {
                 
-                var gameResult = new GameResult();
-                var engine = new BoggleEngine();
-                var playerOrder = [];
-                var playerIds = {};
-                var scores = [];
-                
-                players.forEach(function(player, index) {
-                    playerOrder.push(player.player);
-                    playerIds[player.player] = index;
-                    scores.push(0);
-                });
-
-                solution.words.forEach(function(word) {
-                    var wordResult = {
-                        wrd : word,
-                        scr : engine.calculateScore(word),
-                        pls : []
-                    };
-                    players.forEach(function(playerInGame) {
-                        if (contains(playerInGame.words, word)) {
-                            var pid = playerIds[playerInGame.player];
-                            wordResult.pls.push(pid);
-                        }
-                    });
-                    // If only one player found the word, add the score to his total
-                    if (wordResult.pls.length === 1) {
-                        scores[wordResult.pls[0]] += wordResult.scr;
-                    }
-                    gameResult.wds.push(wordResult);
-                });
-                
-                gameResult.gid = game.gameId;
-                gameResult.pls = playerOrder;
-                gameResult.scs = scores;
+                var gameResult = new GameSolver.createGameResult(
+                        solution, players, game);
                 
                 gameResult.save(function(err) {
                     if (err) {
@@ -173,33 +125,8 @@ function createResultAndProcess(player, players, game, res) {
 }
 
 function sendResult(gameResult, res) {
-    var sendResult = {
-        pls : gameResult.pls,
-        scs : gameResult.scs,
-        wds : []
-    };
-    gameResult.wds.forEach(function(grWd) {
-        var srWd = {
-            wrd : grWd.wrd,
-            scr : grWd.scr,
-            pls : grWd.pls
-        };
-        sendResult.wds.push(srWd);
-    });
+    var sendResult = new GameSolver.createSendResult(gameResult);
     res.json(sendResult);
-}
-
-function contains(list, item) {
-    var found = false;
-    for (var i = 0; i < list.length; i++) {
-        if (item === list[i]) {
-            found = true;
-            break;
-        } else if (list[i] > item) {
-            break;
-        }
-    }
-    return found;
 }
     
 module.exports = router;
