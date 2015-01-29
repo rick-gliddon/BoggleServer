@@ -54,7 +54,7 @@ function persistPlayerWordsAndProcess(player, playerWords, game, res) {
                             console.log('Error updating player words: ' + err);
                             res.status(500).send(err);
                         } else {
-                            getAllPlayerWordsAndProcess(player, game, res);
+                            getAllPlayerWordsAndProcess(game, res);
                         }
                     });
                 } else {
@@ -107,7 +107,7 @@ function createResultAndProcess(players, game, res) {
                 
             } else {
                 
-                var gameResult = new GameSolver.createGameResult(
+                var gameResult = new GameSolver().createGameResult(
                         solution, players, game);
                 
                 gameResult.save(function(err) {
@@ -125,7 +125,7 @@ function createResultAndProcess(players, game, res) {
 }
 
 function sendResult(gameResult, res) {
-    var sendResult = new GameSolver.createSendResult(gameResult);
+    var sendResult = new GameSolver().createSendResult(gameResult);
     res.json(sendResult);
 }
     

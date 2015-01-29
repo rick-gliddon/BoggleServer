@@ -55,12 +55,12 @@ function createNewGame(player, res) {
         }
 
         res.json({ 
-            letters: roll,
-            checkinPoint: id});
+            letters: game.letters,
+            checkinPoint: game.gameId});
 
-        createPlayerInGame(player, id);
+        createPlayerInGame(player, game.gameId);
         
-        createSolution(game.letters, id);
+        createSolution(game.letters, game.gameId);
     });
 }
 
@@ -77,7 +77,7 @@ function createPlayerInGame(player, gameId) {
 }
 
 function createSolution(letters, gameId) {
-    var solution = new GameSolver.createSolution(letters, gameId, wordTree);
+    var solution = new GameSolver().createSolution(letters, gameId, wordTree);
     solution.save(function(err) {
         if (err) {
             console.log('Error creating solution: ' + err);
