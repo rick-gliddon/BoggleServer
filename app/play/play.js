@@ -363,12 +363,7 @@
                 || this.letter === 'Z' ? 'underline' : 'none';
           };
           this.style = {
-            'width' : pc.diceWidth + 'px',
-            'height' : pc.diceWidth + 'px',
             'background' : 'url(svg/dice' + this.rotation + 'deg.svg)',
-            'background-size' : pc.diceWidth + 'px ' + pc.diceWidth + 'px',
-            'line-height' : pc.diceWidth + 'px',
-            'font-size' : pc.fontSize + 'px',
             '-ms-transform' : 'rotate(' + this.rplusw + 'deg)',
             '-webkit-transform' : 'rotate(' + this.rplusw + 'deg)',
             'transform' : 'rotate(' + this.rplusw + 'deg)',

@@ -16,14 +16,14 @@
             </tr>
         </table>
     </div>
-    <div class="sidebyside">
-        <div class="panel panel-default" style="width: 270px; margin-bottom: 5px; padding-left: 5px;" ng-click="playCtrl.addWord()">
-            <h3>{{playCtrl.getFormingWord()}}_</h3>
-            <div style="width: 270px; height: 270px; overflow-y: auto;">
+    <div class="sidebysidegrow">
+        <div class="panel panel-default" style="margin-bottom: 5px; margin-top: 5px; margin-right: 5px; padding-left: 5px;" ng-click="playCtrl.addWord()">
+            <h4>{{playCtrl.getFormingWord()}}_</h4>
+            <div style="height: 24rem; overflow-y: auto;">
                 <p ng-repeat="word in playCtrl.wordList">{{word}}</p>
             </div>
         </div>
-        <div class="progress" style="width: 270px;">
+        <div class="progress" style="margin-right: 5px;">
             <div class="progress-bar" style="width: {{playCtrl.gameProgress}}%;">
                 <span class="sr-only">{{playCtrl.gameProgress}}% Complete</span>
             </div>
