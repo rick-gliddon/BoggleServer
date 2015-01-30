@@ -1,3 +1,13 @@
+@viewport{
+    zoom: 1.0;
+    width: extend-to-zoom;
+}
+
+@-ms-viewport{
+    width: extend-to-zoom;
+    zoom: 1.0;
+}
+
 /*
  * In-play styles
  */
@@ -161,4 +171,15 @@ span.grey {
 }
 span.blue {
     color: steelblue;
+}
+
+
+/*
+ * Title page
+ */
+div.btn-centred {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 13em
 }

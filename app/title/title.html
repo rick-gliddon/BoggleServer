@@ -6,16 +6,16 @@
     Player: {{titleCtrl.capitalisePlayer()}}<p>
 
 <div ng-hide="titleCtrl.isLoggedIn()">
-    <div class="btn btn-default" ng-click="titleCtrl.showSignOnBoggle()">
+    <div class="btn btn-default btn-centred" ng-click="titleCtrl.showSignOnBoggle()">
         Player Login</div><br>
-    <div class="btn btn-default" ng-click="titleCtrl.guestStartGame()">
+    <div class="btn btn-default btn-centred" ng-click="titleCtrl.guestStartGame()">
         Start Solo Game</div><br>
 </div>
 <div ng-show="titleCtrl.isLoggedIn()">
-    <div class="btn btn-default" ng-click="titleCtrl.startGame()">
+    <div class="btn btn-default btn-centred" ng-click="titleCtrl.startGame()">
         Start Competitive Game</div><br>
-    <div class="btn btn-default" ng-click="titleCtrl.guestStartGame()">
+    <div class="btn btn-default btn-centred" ng-click="titleCtrl.guestStartGame()">
         Start Solo Game</div><br>
-    <div class="btn btn-default" ng-click="titleCtrl.signOut()">
+    <div class="btn btn-default btn-centred" ng-click="titleCtrl.signOut()">
         Sign Out</div><br>
 </div>

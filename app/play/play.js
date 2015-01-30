@@ -34,7 +34,7 @@
         var width = $window.innerWidth;
         var height = $window.innerHeight;
         var fullbox = width > height ? width / 2 - 20 : height / 2 - 20;
-        var box = isMobileBrowser() ? fullbox : 344;
+        var box = fullbox;// : 344;
         pc.diceWidth=Math.floor((box - 44) / 4);
 
         pc.fontSize=Math.floor(pc.diceWidth * 0.75);
