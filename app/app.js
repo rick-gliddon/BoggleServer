@@ -1,6 +1,6 @@
 (function() {
 
-  var app = angular.module('bogglesim',['title', 'play', 'results']);
+  var app = angular.module('bogglesim',['title', 'play', 'results', 'login']);
 
   app.factory('authInterceptor', function ($rootScope, $q, $window) {
     return {
@@ -26,9 +26,10 @@
           TITLE : 0,
           REQUEST_PLAY : 1,
           PLAY : 2,
-          RESULTS : 3
+          RESULTS : 3,
+          LOGIN : 99
       };
-      var numStates = 4;
+      var numStates = 4; // Not including login (!)
       var currentState = states.TITLE;
 
       function addCallback(state, newCallback) {
@@ -38,6 +39,11 @@
 
       function nextState(context) {
           advanceState();
+          notify(context);
+      }
+      
+      function login(context) {
+          currentState = states.LOGIN;
           notify(context);
       }
 
@@ -78,6 +84,7 @@
           states : states,
           addCallback : addCallback,
           nextState : nextState,
+          login : login,
           jumpStart : jumpStart,
           quit : quit
       };
@@ -158,6 +165,8 @@
               gameStateService.states.PLAY, setPlayState);
       gameStateService.addCallback(
               gameStateService.states.RESULTS, setResultsState);
+      gameStateService.addCallback(
+              gameStateService.states.LOGIN, setLoginState);
       
       vc.isTitleState = function() {
           return isState(gameStateService.states.TITLE);
@@ -167,6 +176,9 @@
       };
       vc.isResultsState = function() {
           return isState(gameStateService.states.RESULTS);
+      };
+      vc.isLoginState = function() {
+          return isState(gameStateService.states.LOGIN);
       };
 
       vc.keyTyped = function($event) {
@@ -188,6 +200,9 @@
       }
       function setResultsState() {
           currentState = gameStateService.states.RESULTS;
+      }
+      function setLoginState() {
+          currentState = gameStateService.states.LOGIN;
       }
   }]);
 

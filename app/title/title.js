@@ -1,6 +1,6 @@
 (function() {
     
-    angular.module('title', ['signOnModule'])
+    angular.module('title', [])
     .directive('boggleTitle', function() {
                 
        return {
@@ -12,8 +12,8 @@
        }; 
     })
     .controller('BoggleTitleController',
-    ['$scope', '$http', '$window', 'gameStateService', 'signOnBoggle', 
-    function($scope, $http, $window, gameStateService, signOnBoggle) {
+    ['$scope', '$http', '$window', 'gameStateService', 
+    function($scope, $http, $window, gameStateService) {
         var tc = this;
         
         var player;
@@ -43,9 +43,7 @@
         };
 
         tc.showSignOnBoggle = function() {
-            signOnBoggle.show().then(function(newPlayer) {
-                player = newPlayer;
-            });
+            gameStateService.login();
         };
 
         tc.isLoggedIn = function() {

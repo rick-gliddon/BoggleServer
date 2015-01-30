@@ -1,22 +1,19 @@
 (function() {
-    angular.module('signOnModule', ['ui.bootstrap'])
-    .service('signOnBoggle', ['$modal',
-        function ($modal) {
+    
+    angular.module('login', [])
+    .directive('boggleLogin', function () {
 
-            this.show = function () {
-                
-                return $modal.open({
-                    backdrop: true,
-                    keyboard: true,
-                    modalFade: true,
-                    templateUrl: 'signon/signon.html',
-                    controller: 'SignOnBoggleController as signOnCtrl'
-                }).result;
-            };
-
-    }])
-    .controller('SignOnBoggleController', ['$scope', '$modalInstance', '$http', '$window',
-      function($scope, $modalInstance, $http, $window) {
+        return {
+            restrict: 'E',
+            scope: {},
+            templateUrl: 'login/login.html',
+            controller: 'BoggleLoginController',
+            controllerAs: 'loginCtrl'
+        };
+    })
+    .controller('BoggleLoginController',
+    ['$scope', '$http', '$window', 'gameStateService',
+    function($scope, $http, $window, gameStateService) {
         var ctrl = this;
     
         var newAccount = false;
@@ -50,6 +47,10 @@
         
         ctrl.setNewAccount = function(createNewAccount) {
             newAccount = createNewAccount;
+        };
+        
+        ctrl.cancel = function() {
+            closeAndReturnUser('guest');
         };
         
         function isPasswordMatch() {
@@ -96,7 +97,7 @@
         
         function closeAndReturnUser(username) {
             resetCtrl();
-            $modalInstance.close(username);
+            gameStateService.quit({player: username});
         }
         
         function resetCtrl() {
