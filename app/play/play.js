@@ -51,8 +51,8 @@
         pc.gameProgress;
         
         pc.uStyle = {
-          'line-height' : pc.diceWidth + 'px',
-          'font-size' : pc.uFontSize + 'px'
+          'line-height' : '6rem',
+          'font-size' : '3rem'
         };
 
         var startPlayTime;
