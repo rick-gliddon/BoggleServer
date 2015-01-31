@@ -1,8 +1,16 @@
 <div>
     <table>
-        <tr ng-repeat="matrixRow in resultsCtrl.matrix">
-            <td ng-repeat="die in matrixRow" class="rushjob">
-                {{die.letter}}
+        <tr>
+            <td style="background-color: #071D57; padding: 2px;">
+                <table class="boggle diethumb">
+                    <tr ng-repeat="matrixRow in resultsCtrl.matrix">
+                        <td ng-repeat="die in matrixRow" class="boggle diethumb">
+                            <div class="dicebase noselect diethumb" ng-style="die.style" ng-class="{dieselected: die.selected}">
+                                {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect diethumb" ng-style="playCtrl.uStyle">u</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>

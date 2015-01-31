@@ -28,7 +28,7 @@
                 gameStateService.states.PLAY, startPlay);
 
         pc.GAME_DURATION = 180000;
-//        pc.GAME_DURATION = 30000;
+//        pc.GAME_DURATION = 5000;
         pc.MAX_POLL_TIME = 20000;
 
         var width = $window.innerWidth;
@@ -87,10 +87,14 @@
             pc.wordList.unshift(word);
           }
           // else already have word.  Alert?
+          clearSelections();
+        }
+        
+        function clearSelections() {
           while (pc.formingDice.length > 0) {
             pc.formingDice[0].selected = false;
             pc.formingDice.shift();
-          }
+          } 
         }
 
         pc.click = function(die) {
@@ -172,6 +176,7 @@
             startPollTime = null;
             startPlayTime = null;
             pc.gameProgress = 0;
+            clearSelections();
         }
 
         function isAdjacent(die, diceList) {
@@ -354,7 +359,7 @@
           this.id = id;
           this.letter = letter.toUpperCase();
           this.rotation = Math.floor(Math.random() * 4) * 90;
-          this.rplusw = this.rotation + Math.floor(Math.random() * 7) - 3;
+          this.rplusw = this.rotation + Math.floor(Math.random() * 8) - 4;
           this.selected = false;
           this.underlineStyle = function() {
             return this.letter === 'M'

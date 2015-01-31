@@ -32,12 +32,23 @@ span.dicebase {
     font-weight: bolder;
     color: #2892A0;
 }
+div.diethumb {
+    width : 1.3em;
+    height : 1.3em;
+    background-size: 1.3em 1.3em;
+    line-height: 1.3em;
+    font-size: 1em;
+    margin: 2px;
+}
 table.boggle {
     border-collapse: collapse;
 }
 table.boggle, td.boggle {
     border: 5px solid #22689D;
     background-color: #071D57;
+}
+table.diethumb, td.diethumb {
+    border: 2px solid #22689D;
 }
 .dicebase.dieselected {
     /*color: #3BE4FA;*/
@@ -72,14 +83,24 @@ table.boggle, td.boggle {
     width: auto;
 }
 .centred-title {
+    /*font-family: 'Nunito', sans-serif;*/
     font-family: 'Montserrat', sans-serif;
+    /*font-family: 'Monofett', cursive;*/
+    /*font-family: 'Sarpanch' !important;*/
+/*    font-style: normal;
+    font-weight: 700;*/
     text-align: center;
     font-weight: bold;
     color: darkblue;
     -webkit-text-fill-color: white;
     -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: darkblue;
+}
+.spaced {
     padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.bottom-spaced {
     padding-bottom: 2rem;
 }
 .play-title {
