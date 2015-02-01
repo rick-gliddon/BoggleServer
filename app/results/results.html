@@ -1,71 +1,77 @@
 <div>
-    <table>
-        <tr>
-            <td style="background-color: #071D57; padding: 2px;">
-                <table class="boggle diethumb">
-                    <tr ng-repeat="matrixRow in resultsCtrl.matrix">
-                        <td ng-repeat="die in matrixRow" class="boggle diethumb">
-                            <div class="dicebase noselect diethumb" ng-style="die.style" ng-class="{dieselected: die.selected}">
-                                {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect diethumb" ng-style="playCtrl.uStyle">u</span>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-    <p>{{resultsCtrl.letters}}</p>
-    
-    <!-- Multi-player scores and rankins -->
-    <div ng-hide="resultsCtrl.singlePlayer">
-        <h4>Player Scores</h4>
+    <div class="sidebyside">
         <table>
-            <tr ng-repeat="playerScore in resultsCtrl.playerScores">
-                <td class="scores">
-                    {{playerScore.player}}
-                </td>
-                <td>
-                    {{playerScore.score}}
+            <tr>
+                <td style="background-color: #071D57; padding: 2px;">
+                    <table class="boggle diethumb">
+                        <tr ng-repeat="matrixRow in resultsCtrl.matrix">
+                            <td ng-repeat="die in matrixRow" class="boggle diethumb">
+                                <div class="dicebase noselect diethumb" ng-style="die.style" ng-class="{dieselected: die.selected}">
+                                    {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect diethumb" ng-style="playCtrl.uStyle">u</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
         </table>
-        <h4 ng-show="resultsCtrl.outcome === resultsCtrl.OUTCOMES.YOU_WON">
-            You won the round!</h4>
-        <h4 ng-show="resultsCtrl.outcome === resultsCtrl.OUTCOMES.YOU_DREW">
-            You came equal first!</h4>
+        <p>{{resultsCtrl.letters}}</p>
+
+        <!-- Multi-player scores and rankins -->
+        <div ng-hide="resultsCtrl.singlePlayer">
+            <h4>Player Scores</h4>
+            <table>
+                <tr ng-repeat="playerScore in resultsCtrl.playerScores">
+                    <td class="scores">
+                        {{playerScore.player}}
+                    </td>
+                    <td>
+                        {{playerScore.score}}
+                    </td>
+                </tr>
+            </table>
+            <h4 ng-show="resultsCtrl.outcome === resultsCtrl.OUTCOMES.YOU_WON">
+                You won the round!</h4>
+            <h4 ng-show="resultsCtrl.outcome === resultsCtrl.OUTCOMES.YOU_DREW">
+                You came equal first!</h4>
+        </div>
+
+        <!-- Single player score -->
+        <h4 ng-show="resultsCtrl.singlePlayer">
+            Your score: {{resultsCtrl.playerScores[0].score}}
+        </h4>
+
+        <div class="btn btn-default" ng-click="resultsCtrl.startGame()">
+            New Game</div>
+
+        <div class="btn btn-default" ng-click="resultsCtrl.mainMenu()">
+            Main Menu</div>
     </div>
     
-    <!-- Single player score -->
-    <h4 ng-show="resultsCtrl.singlePlayer">
-        Your score: {{resultsCtrl.playerScores[0].score}}
-    </h4>
-    
-    <div class="btn btn-default" ng-click="resultsCtrl.startGame()">
-        New Game</div>
-    
-    <div class="btn btn-default" ng-click="resultsCtrl.mainMenu()">
-        Main Menu</div>
-    
-    <h4>Your words:</h4>
-    <div ng-repeat="word in resultsCtrl.myWords">
-        <span ng-class="{strike: !word.isActuallyAWord, green: word.winner, grey: !word.winner}">
-            {{word.word}}&nbsp;
-        </span>
-        <span class="green" ng-show="word.winner">
-            {{word.score}}&nbsp;
-        </span>
-        <span ng-show="resultsCtrl.guessedByOthers(word)" class="grey">
-            ({{resultsCtrl.getPlayerList(word)}})
-        </span>
-    </div>
-    
-    <h5>Words you missed:</h5>
-    <span ng-repeat="word in resultsCtrl.missedWords">
-        <span ng-class="{blue: word.winner}">
-            {{word.word}} ({{word.score}})&nbsp;
-            <span ng-show="resultsCtrl.guessedByOthers(word)">
-                ({{resultsCtrl.getPlayerList(word)}})&nbsp;
+    <div class="sidebysideresults">
+        <div class="result-words">
+            <h4>Your words:</h4>
+            <div ng-repeat="word in resultsCtrl.myWords">
+                <span ng-class="{strike: !word.isActuallyAWord, green: word.winner, grey: !word.winner}">
+                    {{word.word}}&nbsp;
+                </span>
+                <span class="green" ng-show="word.winner">
+                    {{word.score}}&nbsp;
+                </span>
+                <span ng-show="resultsCtrl.guessedByOthers(word)" class="grey">
+                    ({{resultsCtrl.getPlayerList(word)}})
+                </span>
+            </div>
+
+            <h5>Words you missed:</h5>
+            <span ng-repeat="word in resultsCtrl.missedWords">
+                <span ng-class="{blue: word.winner}">
+                    {{word.word}} ({{word.score}})&nbsp;
+                    <span ng-show="resultsCtrl.guessedByOthers(word)">
+                        ({{resultsCtrl.getPlayerList(word)}})&nbsp;
+                    </span>
+                </span>
             </span>
-        </span>
-    </span>
+        </div>
+    </div>
 </div>
