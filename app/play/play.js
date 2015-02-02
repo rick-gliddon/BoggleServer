@@ -27,8 +27,8 @@
         gameStateService.addCallback(
                 gameStateService.states.PLAY, startPlay);
 
-//        pc.GAME_DURATION = 180000;
-        pc.GAME_DURATION = 30000;
+        pc.GAME_DURATION = 180000;
+//        pc.GAME_DURATION = 30000;
         pc.MAX_POLL_TIME = 20000;
 
         var width = $window.innerWidth;

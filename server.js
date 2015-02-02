@@ -78,6 +78,5 @@ app.use('/champboggle2015', router);
 
 // START THE SERVER
 // =============================================================================
-console.log('Attempting to listen on port: ' + port);
 app.listen(port);
 console.log('Boggle engine started on port ' + port);
