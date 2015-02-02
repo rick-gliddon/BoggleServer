@@ -45,7 +45,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'app')));
 
-var port = process.env.PORT || 8080;        // set our port
+var port = process.env.BOGGLE_PORT || 80;        // set our port
 
 // ROUTES FOR OUR API
 // =============================================================================
