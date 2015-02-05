@@ -153,6 +153,104 @@
       }
   }]);
   
+  app.service('wordFinder', [function() {
+        var wf = this;
+        var matrix;
+        var formingDice;
+        var letterCoords = {};
+        
+        wf.initialise = function() {
+            matrix = [];
+            formingDice = [];
+            letterCoords = {};
+        };
+        
+        wf.setMatrix = function(newMatrix) {
+            matrix = newMatrix;
+        };
+        
+        wf.setFormingDice = function(newFormingDice) {
+            formingDice = newFormingDice;
+        };
+        
+        wf.addLetterCoords = function(letter, i, j) {
+            if (!letterCoords[letter]) {
+                letterCoords[letter] = [];
+            }
+            letterCoords[letter].push({i:i, j:j});
+        };
+
+        wf.isAdjacent = function(die, diceList) {
+            diceList = diceList || formingDice;
+            if (!diceList.length) {
+                return true;
+            }
+            var lastDie = diceList[diceList.length - 1];
+            // TODO Make id an object, i,j
+            var lasti = Number(lastDie.id[0]);
+            var lastj = Number(lastDie.id[1]);
+            var newi = Number(die.id[0]);
+            var newj = Number(die.id[1]);
+          
+            return Math.abs(newi - lasti) <= 1 
+                && Math.abs(newj - lastj) <= 1;
+        };
+        
+        wf.addAdjacentDie = function(coordsList, diceList, letterList) {
+            if (coordsList.length === 0) {
+                // Run out of coordinates.  Return empty list.
+                return [];
+            }
+            // Get the die from the head coords
+            var die = matrix[coordsList[0].i][coordsList[0].j];
+            // If the die is already selected, try the next coords
+            if (diceList.indexOf(die) >= 0) {
+                return wf.addAdjacentDie(
+                        coordsList.slice(1), diceList, letterList);
+            }
+            // If the die is adjacent to the last die in the dice list then call
+            // addLetterListNoBackout to continue evaluating letters.
+            if (wf.isAdjacent(die, diceList)) {
+                var diceListCopy = diceList.slice();
+                diceListCopy.push(die);
+                var diceActions = [{die: die, added: true}]
+                                   .concat(wf.addLetterList(diceListCopy, 
+                                                         letterList.slice(1)));
+                
+                // If evaluation was successful, return the dice actions.
+                // Otherwise try the next coords
+                if (diceActions[diceActions.length - 1].success) {
+                    return diceActions;
+                } else {
+                    return wf.addAdjacentDie(
+                            coordsList.slice(1), diceList, letterList);
+                }
+            }
+            // Coords were not adjacent so try the next coords
+            return wf.addAdjacentDie(coordsList.slice(1), diceList, letterList);
+        };
+        
+        this.addLetterList = function(diceList, letterList) {
+            // If we've depleted the letter list then, success!
+            if (letterList.length === 0) {
+                return [{success: true}];
+            }
+            // Get the next letter and coordinates of the occurences of that
+            // letter
+            var letter = letterList[0];
+            var die = null;
+            var coordsList = letterCoords[letter];
+            
+            // If there are occurences of the letter then add the letters in
+            // the list using the coords list.
+            if (coordsList) {
+                return wf.addAdjacentDie(coordsList, diceList, letterList);
+            } else {
+                return [];
+            }
+        };
+  }]);
+  
   app.controller('ViewController', 
   ['gameStateService', 'requestPlayService', 'keyTypedService',
   function(gameStateService, requestPlayService, keyTypedService) {
