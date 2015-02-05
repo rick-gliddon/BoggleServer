@@ -63,7 +63,7 @@
             var foundWords = context.wordList;
             var finalResults = context.finalResults;
             rc.matrix = context.matrix;
-            player = context.player;
+            player = context.player.toLowerCase();
             
             console.log("Updating results");
             
