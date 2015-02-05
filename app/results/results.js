@@ -10,8 +10,8 @@
         };
     })
     .controller('BoggleResultsController',
-    ['gameStateService', '$scope', 
-    function(gameStateService, $scope) {
+    ['gameStateService', '$scope', 'wordFinder', 
+    function(gameStateService, $scope, wordFinder) {
         
         var rc = this;
         var player;
@@ -138,5 +138,24 @@
                 rc.myWords.push(newWord);
             });
         }
+        
+        var highlightedDice = [];
+        
+        rc.highlightDice = function(word) {
+            highlightedDice.forEach(function(die) {
+                die.selected = false;
+            });
+            highlightedDice = [];
+            
+            if (!word.isActuallyAWord) {
+                return;
+            }
+            var diceActions = wordFinder.addLetterList([], word.word);
+            diceActions.pop(); // remove the success element
+            diceActions.forEach(function(dieAction) {
+                dieAction.die.selected = true;
+                highlightedDice.push(dieAction.die);
+            });
+        };
     }]);
 })();

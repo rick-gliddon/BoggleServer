@@ -33,12 +33,12 @@ span.dicebase {
     color: #2892A0;
 }
 div.diethumb {
-    width : 1.3em;
-    height : 1.3em;
-    background-size: 1.3em 1.3em;
-    line-height: 1.3em;
-    font-size: 1em;
-    margin: 2px;
+    width : 1.7em;
+    height : 1.7em;
+    background-size: 1.7em 1.7em;
+    line-height: 1.7em;
+    font-size: 1.6em;
+    margin: 1.7px;
 }
 table.boggle {
     border-collapse: collapse;
