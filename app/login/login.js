@@ -111,6 +111,7 @@
                 user: '',
                 password: ''
             };
+            ctrl.newReEnter = '';
             ctrl.showCreationError = false;
             ctrl.showLoginError = false;
             ctrl.creationErrorMessage = '';

@@ -4,7 +4,12 @@ var jwt = require('jsonwebtoken');
 var Player = require('../models/player');
 
 router.post('/create', function(req, res) {
-    console.log('Creating user: ' + req.body.user + ", " + req.body.password);
+    console.log('Creating user: ' + req.body.user);
+    
+    if (req.body.user.match("[^0-9 a-zA-Z\.@]")) {
+        res.status(400).send("Username may only contain characters 'A'..'Z', 'a'..'z', '0'..'9', ' ' and '.'");
+        return;
+    }
     
     Player.findOne({'username':req.body.user.toLowerCase()})
           .select('username')
@@ -51,7 +56,7 @@ router.post('/login', function(req, res) {
               if (existingUser) {
                   respondSuccess(existingUser.username, res);
               } else {
-                  res.status(401).send("Incorrect username or password Yo");
+                  res.status(401).send("Incorrect username or password");
               }
           });
 });
