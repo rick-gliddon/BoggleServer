@@ -10,7 +10,7 @@
                         <tr ng-repeat="matrixRow in playCtrl.matrix">
                             <td ng-repeat="die in matrixRow" class="boggle">
                                 <div class="dicebase noselect" ng-style="die.style" ng-click="playCtrl.click(die)" ng-class="{dieselected: die.selected}">
-                                    {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect" ng-style="playCtrl.uStyle">u</span>
+                                    {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect die-little-u">u</span>
                                 </div>
                             </td>
                         </tr>

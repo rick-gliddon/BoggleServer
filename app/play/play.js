@@ -49,11 +49,6 @@
 
         pc.timePlaying;
         pc.gameProgress;
-        
-        pc.uStyle = {
-          'line-height' : '6rem',
-          'font-size' : '3rem'
-        };
 
         var startPlayTime;
         var playTimer;

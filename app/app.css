@@ -32,13 +32,9 @@ span.dicebase {
     font-weight: bolder;
     color: #2892A0;
 }
-div.diethumb {
-    width : 1.7em;
-    height : 1.7em;
-    background-size: 1.7em 1.7em;
-    line-height: 1.7em;
-    font-size: 1.6em;
-    margin: 1.7px;
+span.die-little-u {
+    line-height: 6rem;
+    font-size: 3rem;
 }
 table.boggle {
     border-collapse: collapse;
@@ -46,6 +42,18 @@ table.boggle {
 table.boggle, td.boggle {
     border: 5px solid #22689D;
     background-color: #071D57;
+}
+div.diethumb {
+    width : 1.7em;
+    height : 1.7em;
+    background-size: 1.7em 1.7em;
+    line-height: 1.7em;
+    font-size: 1.7em;
+    margin: 1.7px;
+}
+span.die-little-u-thumb {
+    line-height: 1.7rem;
+    font-size: 1.4rem;
 }
 table.diethumb, td.diethumb {
     border: 2px solid #22689D;
@@ -219,6 +227,9 @@ td.rushjob {
 }
 td.scores {
     padding-right: 7px;
+}
+span.underline {
+    text-decoration: underline;
 }
 span.strike {
     text-decoration: line-through;

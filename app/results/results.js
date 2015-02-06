@@ -15,6 +15,8 @@
         
         var rc = this;
         var player;
+        var highlightedDice = [];
+        var selectedWord;
 
         rc.OUTCOMES = {
             YOU_WON : "You Won",
@@ -139,18 +141,26 @@
             });
         }
         
-        var highlightedDice = [];
+        rc.isSelectedWord = function(word) {
+            return word === selectedWord;
+        }
         
         rc.highlightDice = function(word) {
+            if (rc.isSelectedWord(word)) {
+                return;
+            }
             highlightedDice.forEach(function(die) {
                 die.selected = false;
             });
             highlightedDice = [];
             
             if (!word.isActuallyAWord) {
+                selectedWord = null;
                 return;
             }
-            var diceActions = wordFinder.addLetterList([], word.word);
+            selectedWord = word;
+            var searchWord = word.word.slice().replace("qu", "q");
+            var diceActions = wordFinder.addLetterList([], searchWord);
             diceActions.pop(); // remove the success element
             diceActions.forEach(function(dieAction) {
                 dieAction.die.selected = true;

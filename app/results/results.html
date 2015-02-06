@@ -7,7 +7,7 @@
                         <tr ng-repeat="matrixRow in resultsCtrl.matrix">
                             <td ng-repeat="die in matrixRow" class="boggle diethumb">
                                 <div class="dicebase noselect diethumb" ng-style="die.style" ng-class="{dieselected: die.selected}">
-                                    {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect diethumb" ng-style="playCtrl.uStyle">u</span>
+                                    {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect die-little-u-thumb">u</span>
                                 </div>
                             </td>
                         </tr>
@@ -53,9 +53,9 @@
             <div ng-repeat="word in resultsCtrl.myWords">
                 <span ng-click="resultsCtrl.highlightDice(word)"
                      ng-mouseover="resultsCtrl.highlightDice(word)">
-                    <span ng-class="{strike: !word.isActuallyAWord, green: word.winner, grey: !word.winner}">
-                        {{word.word}}&nbsp;
-                    </span>
+                    <span ng-class="{strike: !word.isActuallyAWord, green: word.winner, grey: !word.winner, underline: resultsCtrl.isSelectedWord(word)}">
+                        {{word.word}}
+                    </span>&nbsp;
                     <span class="green" ng-show="word.winner">
                         {{word.score}}&nbsp;
                     </span>
@@ -70,7 +70,8 @@
                 <span ng-click="resultsCtrl.highlightDice(word)"
                       ng-mouseover="resultsCtrl.highlightDice(word)">
                     <span ng-class="{blue: word.winner}">
-                        {{word.word}} ({{word.score}})&nbsp;
+                        <span ng-class="{underline: resultsCtrl.isSelectedWord(word)}">
+                            {{word.word}}</span> ({{word.score}})&nbsp;
                         <span ng-show="resultsCtrl.guessedByOthers(word)">
                             ({{resultsCtrl.getPlayerList(word)}})&nbsp;
                         </span>
