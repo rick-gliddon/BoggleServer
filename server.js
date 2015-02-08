@@ -25,6 +25,7 @@ var startgameRoute = require('./server/routes/startgame');
 var gueststartgameRoute = require('./server/routes/gueststartgame');
 var checkinRoute = require('./server/routes/checkin');
 var guestcheckinRoute = require('./server/routes/guestcheckin');
+var heartbeatRoute = require('./server/routes/heartbeat');
 
 var wordlist = require('./server/engine/wordlist');
 var WordTree = require('./server/engine/wordtree');
@@ -69,6 +70,7 @@ router.use('/auth', authRoute);
 router.get('/api/identify', function(req, res) {res.send(req.user.name);});
 router.use('/api/startgame', startgameRoute);
 router.use('/api/checkin', checkinRoute);
+router.use('/api/hearbeat', heartbeatRoute);
 router.use('/guest/startgame', gueststartgameRoute);
 router.use('/guest/checkin', guestcheckinRoute);
 

@@ -89,6 +89,49 @@
           quit : quit
       };
   });
+  
+  app.factory('heartbeatService',
+  ['$interval', '$http', '$window',
+  function($interval, $http, $window) {
+      var callback = null;
+      var player = null;
+      var heartbeatTimer;
+      
+      function setCallback(newPlayer, newCallback) {
+          callback = newCallback;
+          player = newPlayer;
+          postHeartbeat();
+      }
+      
+      function removeCallback(id) {
+          callback = null;
+          player = null;
+          $interval.cancel(heartbeatTimer);
+      }
+      
+      function postHeartbeat() {
+          $http.post('/champboggle2015/api/heartbeat', player)
+                  .error(function(err) {
+                      $window.alert('Error sending heartbeat to server: ' + err);
+                      $interval.cancel(heartbeatTimer);
+                  })
+                  .success(function(result) {
+                      callback(result);
+                      // if no players waiting and no game started, wait 5 seconds
+                      if (!result.playersWaiting && !result.gameStartedBy) {
+                          heartbeatTimer = $interval(timerTriggered, 5000, 1);
+                      } else {
+                          // if players waiting or game started, wait 1 second
+                          heartbeatTimer = $interval(timerTriggered, 1000, 1);
+                      }
+                  });
+      }
+      
+      return {
+          setCallback: setCallback,
+          removeCallback: removeCallback
+      };
+  }]);
 
   app.factory('keyTypedService', function() {
       var callbackList = [];

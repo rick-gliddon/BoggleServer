@@ -17,6 +17,19 @@
         var tc = this;
         
         var player;
+        
+        // Add callback to heartbeatService
+        // When callback called update players waiting
+        // and if gameStartedBy
+        // if countingDownTimer null
+        // set start text and initial timer val of floor of secondsLeft,
+        // start countdown using floor of secondsLeft
+        
+        // countDownTimer triggered
+        // if last countdown, set start text to regular
+        // else update with timer val
+        
+        // On exit cancel hearbeatService and countDown timer.
 
         gameStateService.addCallback(
                 gameStateService.states.TITLE, titleState);
@@ -61,6 +74,18 @@
             }
             return player.charAt(0).toUpperCase()
                     + player.substring(1);
+        };
+        
+        tc.isPlayersWaiting = function() {
+            return true;
+        };
+        
+        tc.getPlayersWaiting = function() {
+            return "Tom, Dick and Harry";
+        };
+        
+        tc.getStartGameLabel = function() {
+            return 'Start Deathmatch';
         };
         
         function titleState(context) {

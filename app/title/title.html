@@ -3,7 +3,10 @@
 <h3 class="centred-title bottom-spaced">2015</h3>
 
 <p class="text-center" ng-show="titleCtrl.isLoggedIn()">
-    Player: {{titleCtrl.capitalisePlayer()}}<p>
+    Welcome {{titleCtrl.capitalisePlayer()}}<p>
+
+<p class="text-center" ng-show="titleCtrl.isPlayersWaiting()">
+    {{titleCtrl.getPlayersWaiting()}} are waiting to play<p>
 
 <div ng-hide="titleCtrl.isLoggedIn()">
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.showSignOnBoggle()">
@@ -13,7 +16,7 @@
 </div>
 <div ng-show="titleCtrl.isLoggedIn()">
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.startGame()">
-        Start Competitive Game</div><br>
+        {{titleCtrl.getStartGameLabel()}}</div><br>
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.guestStartGame()">
         Start Solo Game</div><br>
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.signOut()">

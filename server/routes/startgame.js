@@ -44,6 +44,7 @@ router.get('/', function(req, res) {
 function createNewGame(player, res) {
     
     var game = new GameCreator().createGame();
+    game.startedBy = player;
 
     // save the game and send the response
     game.save(function(err) {
