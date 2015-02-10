@@ -26,7 +26,11 @@ router.put('/', function(req, res) {
                 }
                 if (existingGame) {
                     result.gameStartedBy = existingGame.startedBy;
-                    result.secondsLeft = new Date() - existingGame.secondsLeft;
+                    result.secondsLeft = Math.floor(
+                            (existingGame.startTime.getTime()
+                           + WAIT_FOR_PLAYERS_MILLISEC
+                           - new Date().getTime())
+                           / 1000);
                 }
                 
                 findPlayersWaiting(req.user.name, result, res);
@@ -34,34 +38,36 @@ router.put('/', function(req, res) {
 });
 
 function findPlayersWaiting(player, result, res) {
-    Player.findAll(
+    Player.find(
             {
                 'heartbeat':{'$gte': new Date(new Date().getTime() - HEARTBEAT_AGE_MILLISEC)},
                 'username':{'$ne': player}
             })
             .select('username')
+            .sort('username')
             .exec(function handleFindPlayersWaitingResult(err, playersFound) {
                 if (err) {
                     console.log('Error searching for waiting players: ' + res);
                     res.status(500).send(err);
                     return;
                 }
-                if (playersFound) {
+                if (playersFound && playersFound.length > 0) {
                     result.playersWaiting = playersFound.map(function(pFound) {
                         return pFound.username;
                     });
                 }
+                res.json(result);
+                saveHeartbeat(player);
     });
-    res.json(result);
-    
-    saveHeartbeat(player);
 }
 
 function saveHeartbeat(player) {
-    Player.update({'player' : player},
+    Player.update({'username' : player},
                   {$set : {'heartbeat' : new Date()}},
                   function (err) {
-                      console.log('Could not save heartbeat for player: ' + player + ': ' + err);
+                      if (err) {
+                        console.log('Could not save heartbeat for player: ' + player + ': ' + err);
+                    }
                   });
 }
 

@@ -5,8 +5,8 @@
 <p class="text-center" ng-show="titleCtrl.isLoggedIn()">
     Welcome {{titleCtrl.capitalisePlayer()}}<p>
 
-<p class="text-center" ng-show="titleCtrl.isPlayersWaiting()">
-    {{titleCtrl.getPlayersWaiting()}} are waiting to play<p>
+<p class="text-center" ng-show="titleCtrl.arePlayersWaiting()">
+    {{titleCtrl.getPlayersWaitingLabel()}}<p>
 
 <div ng-hide="titleCtrl.isLoggedIn()">
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.showSignOnBoggle()">

@@ -70,7 +70,7 @@ router.use('/auth', authRoute);
 router.get('/api/identify', function(req, res) {res.send(req.user.name);});
 router.use('/api/startgame', startgameRoute);
 router.use('/api/checkin', checkinRoute);
-router.use('/api/hearbeat', heartbeatRoute);
+router.use('/api/heartbeat', heartbeatRoute);
 router.use('/guest/startgame', gueststartgameRoute);
 router.use('/guest/checkin', guestcheckinRoute);
 

@@ -32,6 +32,7 @@ function createUserAndRespond(username, password, res) {
     var player = new Player();
     player.username = username;
     player.password = password;
+    player.heartbeat = new Date();
     player.save(function(err) {
         if (err) {
             console.log('Error saving player: ' + err);

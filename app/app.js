@@ -103,26 +103,28 @@
           postHeartbeat();
       }
       
-      function removeCallback(id) {
+      function removeCallback() {
           callback = null;
           player = null;
           $interval.cancel(heartbeatTimer);
       }
       
       function postHeartbeat() {
-          $http.post('/champboggle2015/api/heartbeat', player)
-                  .error(function(err) {
-                      $window.alert('Error sending heartbeat to server: ' + err);
-                      $interval.cancel(heartbeatTimer);
+          $http.put('/champboggle2015/api/heartbeat', {})
+                  .error(function(err, status) {
+                      if (status !== 401) { // Will get 401 if heart beat is sent after log out
+                          $window.alert('Error sending heartbeat to server: ' + err);
+                          $interval.cancel(heartbeatTimer);
+                      }
                   })
                   .success(function(result) {
                       callback(result);
                       // if no players waiting and no game started, wait 5 seconds
-                      if (!result.playersWaiting && !result.gameStartedBy) {
-                          heartbeatTimer = $interval(timerTriggered, 5000, 1);
+                      if (result.playersWaiting.length < 1 && !result.gameStartedBy) {
+                          heartbeatTimer = $interval(postHeartbeat, 5000, 1);
                       } else {
                           // if players waiting or game started, wait 1 second
-                          heartbeatTimer = $interval(timerTriggered, 1000, 1);
+                          heartbeatTimer = $interval(postHeartbeat, 1000, 1);
                       }
                   });
       }
