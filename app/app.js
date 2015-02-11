@@ -94,12 +94,51 @@
   ['$interval', '$http', '$window',
   function($interval, $http, $window) {
       var callback = null;
-      var player = null;
       var heartbeatTimer;
+
+      var ALLS_QUIET_LABELS = [
+        "All's quiet at the Boggle Server",
+        "So, it looks like you're the only one logged in",
+        "There's no one to play with right now",
+        "Looks like you're on your lonesome",
+        "There are tumble weeds blowing through the Boggle Server"
+      ];
+
+      var PLAYERS_WAITING_LABELS = [
+        "ready to play",
+        "waiting to get Boggly",
+        "hanging around doing nothing"
+      ];
       
-      function setCallback(newPlayer, newCallback) {
+      var START_GAME_LABEL = "Start Game";
+
+      var STATES = {
+        GAME_STARTED: 0,
+        PLAYERS_WAITING: 1,
+        GAME_IN_PROGRESS: 2,
+        ALLS_QUIET: 3,
+        STOPPED: 4 // will not be sent
+      };
+
+      var allsQuietLabel;
+      var playersWaitingLabel;
+      var startGameLabel;
+      var countDown;
+      var gameStartedBy;
+      
+      function initialiseLabels() {
+          allsQuietLabel = pickLabel(ALLS_QUIET_LABELS);
+          playersWaitingLabel = pickLabel(PLAYERS_WAITING_LABELS);
+          startGameLabel = START_GAME_LABEL;
+      }
+
+      function pickLabel(labels) {
+          return labels[Math.floor(Math.random() * labels.length)];
+      }
+      
+      function setCallback(newCallback) {
           callback = newCallback;
-          player = newPlayer;
+          initialiseLabels();
           postHeartbeat();
       }
       
@@ -118,15 +157,111 @@
                       }
                   })
                   .success(function(result) {
-                      callback(result);
-                      // if no players waiting and no game started, wait 5 seconds
-                      if (result.playersWaiting.length < 1 && !result.gameStartedBy) {
-                          heartbeatTimer = $interval(postHeartbeat, 5000, 1);
-                      } else {
-                          // if players waiting or game started, wait 1 second
-                          heartbeatTimer = $interval(postHeartbeat, 1000, 1);
+                      
+                      switch(result.state) {
+                          
+                          case STATES.GAME_STARTED:
+                              countDown = result.ctx.secondsLeft;
+                              gameStartedBy = capitalise(result.ctx.startedBy);
+                              var builder = [];
+                              builder.push("Join ");
+                              builder.push(gameStartedBy);
+                              builder.push("'s game: ");
+                              builder.push(countDown);
+                              var response = {
+                                  description: gameStartedBy + " has started a game!",
+                                  startGameLabel: builder.join('')
+                              };
+                              callback(response);
+                              heartbeatTimer = $interval(updateCountDown, 1000, countDown);
+                              break;
+                              
+                          case STATES.PLAYERS_WAITING:
+                              var joiner = result.ctx.players.length > 1 ? "are" : "is";
+                              var builder = [];
+                              builder.push(prettyJoin(result.ctx.players));
+                              builder.push(joiner);
+                              builder.push(playersWaitingLabel);
+                              var response = {
+                                  description: builder.join(' '),
+                                  startGameLabel: startGameLabel
+                              };
+                              callback(response);
+                              heartbeatTimer = $interval(postHeartbeat, 1000, 1);
+                              break;
+                              
+                          case STATES.GAME_IN_PROGRESS:
+                              var plural = result.ctx.numGames > 1 ? "s" : "";
+                              var builder = [];
+                              builder.push(result.ctx.numGames);
+                              builder.push(" game");
+                              builder.push(plural);
+                              builder.push(" in progress, starring ");
+                              builder.push(prettyJoin(result.ctx.featuring));
+                              builder.push("; ");
+                              builder.push(result.ctx.secondsLeft);
+                              builder.push(" seconds till it's done.");
+                              var response = {
+                                  description: builder.join(''),
+                                  startGameLabel: startGameLabel
+                              };
+                              callback(response);
+                              heartbeatTimer = $interval(postHeartbeat, 5000, 1);
+                              break;
+                              
+                          case STATES.ALLS_QUIET:
+                              var response = {
+                                  description: allsQuietLabel,
+                                  startGameLabel: startGameLabel
+                              };
+                              callback(response);
+                              heartbeatTimer = $interval(postHeartbeat, 5000, 1);
+                              break;
+                              
+                          default:
+                              console.log("Unexpected heartbeat state: " + result.state);
+                              $interval.cancel(heartbeatTimer);
                       }
                   });
+      }
+      
+      function updateCountDown() {
+          countDown--;
+          var builder = [];
+          builder.push("Join ");
+          builder.push(gameStartedBy);
+          builder.push("'s game: ");
+          builder.push(countDown);
+          var response = {
+              description: gameStartedBy + " has started a game!",
+              startGameLabel: builder.join('')
+          };
+          callback(response);
+          if (countDown === 0) {
+              $interval.cancel(heartbeatTimer);
+              postHeartbeat();
+          }
+      }
+        
+      function capitalise(text) {
+          if (!text) {
+              return '';
+          }
+          return text.charAt(0).toUpperCase()
+                  + text.substring(1);
+      }
+        
+      function prettyJoin(array) {
+          var builder = [];
+          for (var i = 0; i < array.length; i++) {
+              builder.push(capitalise(array[i]));
+              if (i < array.length - 2) {
+                  builder.push(', ');
+              } else if (i === array.length - 2) {
+                  builder.push(' & ');
+              }
+          }
+          return builder.join('');
       }
       
       return {
