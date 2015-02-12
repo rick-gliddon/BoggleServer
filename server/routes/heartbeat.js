@@ -88,8 +88,8 @@ function findRunningGames(player, res) {
                             featuring: featuring,
                             secondsLeft: secondsLeft
                         };
-                        findPlayersWaiting(player, result, res);
                     }
+                    findPlayersWaiting(player, result, res);
                     
                 } else {
                     // We found a newly started game so set result with startedBy

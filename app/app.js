@@ -199,14 +199,18 @@
                               builder.push(" in progress, starring ");
                               builder.push(prettyJoin(result.ctx.featuring));
                               builder.push("; ");
-                              builder.push(result.ctx.secondsLeft);
+                              builder.push(result.ctx.secondsLeft > 0 ? result.ctx.secondsLeft : 0);
                               builder.push(" seconds till it's done.");
                               var response = {
                                   description: builder.join(''),
                                   startGameLabel: startGameLabel
                               };
                               callback(response);
-                              heartbeatTimer = $interval(postHeartbeat, 5000, 1);
+                              if (result.ctx.secondsLeft < 5) {
+                                  heartbeatTimer = $interval(postHeartbeat, 1000, 1);
+                              } else {
+                                  heartbeatTimer = $interval(postHeartbeat, 5000, 1);
+                              }
                               break;
                               
                           case STATES.ALLS_QUIET:

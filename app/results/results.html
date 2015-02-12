@@ -1,4 +1,22 @@
 <div>
+    <div class="status-bar">
+        <div class="sidebyside">
+            {{resultsCtrl.getStatusDescription()}}
+        </div>
+        <div class="sidebysideresults">
+            <div class="btn btn-default" ng-click="resultsCtrl.login()" 
+                ng-show="resultsCtrl.isGuest()">
+                Player Login
+            </div>
+            <div class="btn btn-default" ng-click="resultsCtrl.startGame()">
+                {{resultsCtrl.getStartGameLabel()}}
+            </div>
+            <div class="btn btn-default" ng-click="resultsCtrl.mainMenu()">
+                Main Menu
+            </div>
+        </div>
+    </div>
+    <div>
     <div class="sidebyside">
         <table>
             <tr>
@@ -39,12 +57,6 @@
         <h4 ng-show="resultsCtrl.singlePlayer">
             Your score: {{resultsCtrl.playerScores[0].score}}
         </h4>
-
-        <div class="btn btn-default" ng-click="resultsCtrl.startGame()">
-            New Game</div>
-
-        <div class="btn btn-default" ng-click="resultsCtrl.mainMenu()">
-            Main Menu</div>
     </div>
     
     <div class="sidebysideresults">
@@ -79,5 +91,6 @@
                 </span>
             </span>
         </div>
+    </div>
     </div>
 </div>

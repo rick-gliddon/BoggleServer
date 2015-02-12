@@ -12,8 +12,8 @@
        }; 
     })
     .controller('BoggleTitleController',
-    ['$scope', '$http', '$window', 'gameStateService', 'heartbeatService', '$interval',
-    function($scope, $http, $window, gameStateService, heartbeatService, $interval) {
+    ['$scope', '$http', '$window', 'gameStateService', 'heartbeatService',
+    function($scope, $http, $window, gameStateService, heartbeatService) {
         var tc = this;
         
         var player; // The current player name
@@ -88,8 +88,7 @@
             startButtonText = "Start Game";
         }
         
-        // Received callback from heartbeat service.  Update the players waiting and if there is a
-        // game newly started, start the count down timer if it isn't already started
+        // Received callback from heartbeat service.
         function heartbeatCallback(heartbeatCtx) {
             console.log('heartbeatCallback called');
             if (heartbeatCtx.description !== serverStatusLabel) {

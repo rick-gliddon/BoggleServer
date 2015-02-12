@@ -10,13 +10,15 @@
         };
     })
     .controller('BoggleResultsController',
-    ['gameStateService', '$scope', 'wordFinder', 
-    function(gameStateService, $scope, wordFinder) {
+    ['gameStateService', '$scope', 'wordFinder', 'heartbeatService', 
+    function(gameStateService, $scope, wordFinder, heartbeatService) {
         
         var rc = this;
         var player;
         var highlightedDice = [];
         var selectedWord;
+        var startGameLabel;
+        var statusDescription;
 
         rc.OUTCOMES = {
             YOU_WON : "You Won",
@@ -52,11 +54,29 @@
             return word.players.join(" + ");
         };
         
+        rc.isGuest = function() {
+            return player === 'guest';
+        };
+        
+        rc.getStartGameLabel = function() {
+            return startGameLabel;
+        };
+        
+        rc.getStatusDescription = function() {
+            return statusDescription;
+        };
+        
+        rc.login = function() {
+            gameStateService.login();
+        };
+        
         rc.startGame = function() {
+            heartbeatService.removeCallback();
             gameStateService.jumpStart({player: player});
         };
         
         rc.mainMenu = function() {
+            heartbeatService.removeCallback();
             gameStateService.quit({player: player});
         };
         
@@ -66,6 +86,14 @@
             var finalResults = context.finalResults;
             rc.matrix = context.matrix;
             player = context.player.toLowerCase();
+            
+            if (player === 'guest') {
+                statusDescription = 'Why not log in and play with others?';
+                startGameLabel = "Start Solo Game";
+            } else {
+                heartbeatService.setCallback(heartbeatCallback);
+                startGameLabel = "Start Game";
+            }
             
             console.log("Updating results");
             
@@ -143,7 +171,7 @@
         
         rc.isSelectedWord = function(word) {
             return word === selectedWord;
-        }
+        };
         
         rc.highlightDice = function(word) {
             if (rc.isSelectedWord(word)) {
@@ -167,5 +195,16 @@
                 highlightedDice.push(dieAction.die);
             });
         };
+        
+        // Received callback from heartbeat service.
+        function heartbeatCallback(heartbeatCtx) {
+            console.log('heartbeatCallback called');
+            if (heartbeatCtx.description !== statusDescription) {
+                statusDescription = heartbeatCtx.description;
+            }
+            if (heartbeatCtx.startGameLabel !== startGameLabel) {
+                startGameLabel = heartbeatCtx.startGameLabel;
+            }
+        }
     }]);
 })();
