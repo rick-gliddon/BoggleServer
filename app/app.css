@@ -270,7 +270,7 @@ div.btn-centred {
 }
 
 /*once the viewport reaches 35ems width, make the base font size a wee bit bigger*/
-@media only screen and (min-width: 39em) {
+@media only screen and (min-width: 41em) {
 
     .sidebysidelist {
         width: 22em;

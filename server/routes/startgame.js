@@ -35,9 +35,8 @@ router.get('/', function(req, res) {
                     
                     if (existingGame.startedBy !== req.user.name) {
                         checkIfPlayerInGame(req.user.name, existingGame.gameId);
-                    } else {
-                        console.log("Found game starter YO!!!!!!!");
                     }
+                    // else current user started the game, don't add him again
                 
                 } else {
                     createNewGame(req.user.name, res);
@@ -54,9 +53,8 @@ function checkIfPlayerInGame(player, gameId) {
                 if (!existingPlayer) {
                     console.log("No existing player YO!!!!!!!!!!!!");
                     createPlayerInGame(player, gameId);
-                } else {
-                    console.log("Found existing player YO!!!!!!!!!!");
                 }
+                // else player is already player in game, don't add him again
          });
 };
 
