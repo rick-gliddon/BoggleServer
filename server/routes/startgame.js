@@ -21,7 +21,7 @@ router.get('/', function(req, res) {
     
     Game.findOne(
         {'startTime':{'$gte': new Date(new Date().getTime() - WAIT_FOR_PLAYERS_MILLISEC)}})
-            .select('gameId letters')
+            .select('gameId letters startedBy')
             .exec(function handleFindGameResult(err, existingGame) {
                 if (err) {
                     console.log('Error searching for running game: ' + res);
@@ -33,13 +33,32 @@ router.get('/', function(req, res) {
                         letters: existingGame.letters,
                         checkinPoint: existingGame.gameId});
                     
-                    createPlayerInGame(req.user.name, existingGame.gameId);
+                    if (existingGame.startedBy !== req.user.name) {
+                        checkIfPlayerInGame(req.user.name, existingGame.gameId);
+                    } else {
+                        console.log("Found game starter YO!!!!!!!");
+                    }
                 
                 } else {
                     createNewGame(req.user.name, res);
                 }
     });
 });
+
+function checkIfPlayerInGame(player, gameId) {
+    PlayerInGame.findOne(
+        {'player':player,
+         'gameId':gameId})
+            .select('player')
+            .exec(function handleFindGameResult(err, existingPlayer) {
+                if (!existingPlayer) {
+                    console.log("No existing player YO!!!!!!!!!!!!");
+                    createPlayerInGame(player, gameId);
+                } else {
+                    console.log("Found existing player YO!!!!!!!!!!");
+                }
+         });
+};
 
 function createNewGame(player, res) {
     
