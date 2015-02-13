@@ -7,7 +7,12 @@ router.post('/create', function(req, res) {
     console.log('Creating user: ' + req.body.user);
     
     if (req.body.user.match("[^0-9 a-zA-Z\.@]")) {
-        res.status(400).send("Username may only contain characters 'A'..'Z', 'a'..'z', '0'..'9', ' ' and '.'");
+        res.status(400).send("Username may only contain characters A-Z, a-z, 0-9, ' ' and .");
+        return;
+    }
+    
+    if (req.body.password.match("[^0-9 a-zA-Z\.!$%@#]")) {
+        res.status(400).send("Password may only contain characters A-Z, a-z, 0-9, !$.%@# and ' '");
         return;
     }
     
