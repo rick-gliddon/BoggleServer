@@ -11,20 +11,6 @@
 /*
  * In-play styles
  */
-div.dicebase {
-    width : 6rem;
-    height : 6rem;
-    display: block;
-    background-size: 6rem 6rem;
-    line-height: 6rem;
-    font-size: 4rem;
-    vertical-align: middle;
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;/*"Lucida Console", Monaco, monospace;*/
-    font-weight: bolder;
-    color: #2892A0;
-    margin: 4px;
-}
 span.dicebase {
     vertical-align: middle;
     text-align: center;
@@ -38,10 +24,6 @@ span.die-little-u {
 }
 table.boggle {
     border-collapse: collapse;
-}
-table.boggle, td.boggle {
-    border: 5px solid #22689D;
-    background-color: #071D57;
 }
 div.diethumb {
     width : 1.7em;
@@ -85,44 +67,13 @@ table.diethumb, td.diethumb {
     -ms-user-select: none;
     user-select: none;
 }
-.playspace {
-    margin-left: 0;
-    margin-right: 0;
-    width: auto;
-}
-.centred-title {
-    /*font-family: 'Nunito', sans-serif;*/
-    font-family: 'Montserrat', sans-serif;
-    /*font-family: 'Monofett', cursive;*/
-    /*font-family: 'Sarpanch' !important;*/
-/*    font-style: normal;
-    font-weight: 700;*/
-    text-align: center;
-    font-weight: bold;
-    color: darkblue;
-    -webkit-text-fill-color: white;
-    -webkit-text-stroke-width: 2px;
-    -webkit-text-stroke-color: darkblue;
-}
 .spaced {
     padding-top: 2rem;
     padding-bottom: 2rem;
 }
-.bottom-spaced {
-    padding-bottom: 2rem;
-}
-.play-title {
-    display: none;
-}
 .word-list {
     margin-bottom: 5px;
-    margin-top: 5px;
-    margin-right: 5px;
     padding-left: 5px;
-}
-.entered-words {
-    height: 24rem;
-    overflow-y: auto;
 }
 
 /*
@@ -268,15 +219,174 @@ div.btn-centred {
     margin-right: auto;
     width: 13em
 }
+div.spacer {
+    padding: 0.3em;
+}
 
-/*once the viewport reaches 35ems width, make the base font size a wee bit bigger*/
-@media only screen and (min-width: 41em) {
+/* Responsive elements */
 
-    .sidebysidelist {
-        width: 22em;
-        overflow: visible;
-        float: left;
+/* Iphone portrait */
+
+    /* Title Screen */
+    .centred-title {
+        margin-top: 5px;
+        margin-bottom: 2px;
+        /*font-family: 'Nunito', sans-serif;*/
+        font-family: 'Montserrat', sans-serif;
+        /*font-family: 'Monofett', cursive;*/
+        /*font-family: 'Sarpanch' !important;*/
+    /*    font-style: normal;
+        font-weight: 700;*/
+        text-align: center;
+        font-weight: bold;
+        color: darkblue;
+        -webkit-text-fill-color: white;
+        -webkit-text-stroke-width: 2px;
+        -webkit-text-stroke-color: darkblue;
     }
+    .bottom-spaced {
+        padding-bottom: 1rem;
+    }
+    /* Play Screen */
+    .playspace {
+        margin-left: 0;
+        margin-right: 0;
+        width: auto;
+    }
+    .play-title {
+        display: none;
+    }
+    .play-panel-a {
+        float: none;
+        margin: 5px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 21rem;
+    }
+    .play-panel-b {
+        float: none;
+        margin: 5px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 21rem;
+        overflow: visible;
+    }
+    .word-list-wrapper {
+        margin-right: 5px;
+    }
+    div.dicebase {
+        width : 4rem;
+        height : 4rem;
+        display: block;
+        background-size: 4rem 4rem;
+        line-height: 4rem;
+        font-size: 3rem;
+        vertical-align: middle;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;/*"Lucida Console", Monaco, monospace;*/
+        font-weight: bolder;
+        color: #2892A0;
+        margin: 4px;
+    }
+    table.boggle, td.boggle {
+        border: 2px solid #22689D;
+        background-color: #071D57;
+    }
+    td.background {
+        background-color: #071D57;
+        padding: 2px;
+    }
+    .entered-words {
+        height: 8rem;
+        overflow-y: auto;
+    }
+    
+/* Galaxy Note portait */
+@media only screen and (min-width: 21em) {
+    /* Title Screen */
+    .centred-title {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    .bottom-spaced {
+        padding-bottom: 2rem;
+    }
+    /* Play Screen */
+    .play-panel-a {
+        width: 25rem;
+    }
+    .play-panel-b {
+        width: 25rem;
+    }
+    .word-list-wrapper {
+        margin-right: 0;
+    }
+    div.dicebase {
+        width : 5rem;
+        height : 5rem;
+        background-size: 5rem 5rem;
+        line-height: 5rem;
+        font-size: 3.5rem;
+        margin: 4px;
+    }
+    td.background {
+        padding: 4px;
+    }
+    .entered-words {
+        height: 16rem;
+    }
+}
+/* Iphone landscape */
+@media only screen and (min-width: 30em) {
+    /* Title Screen */
+    .centred-title {
+        margin-top: 5px;
+        margin-bottom: 2px;
+    }
+    .bottom-spaced {
+        padding-bottom: 1rem;
+    }
+    /* Play Screen */
+    .play-panel-a {
+        float: left;
+        display: inline;
+        margin-left: 5px;
+        margin-right: 5px;
+        width: auto;
+    }
+    .play-panel-b {
+        width: auto;
+        overflow: hidden;
+        float: none;
+        display: block;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .word-list-wrapper {
+        margin-top: 5px;
+        margin-right: 5px;
+    }
+    .entered-words {
+        height: 18.5rem;
+    }
+}
+/* Galaxy Note landscape */
+@media only screen and (min-width: 33em) {
+    
+}
+/* Large Devices */
+@media only screen and (min-width: 41em) {
+    /* Title Screen */
+    .centred-title {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    .bottom-spaced {
+        padding-bottom: 2rem;
+    }
+    /* Play Screen */
     .playspace {
         margin-left: auto;
         margin-right: auto;
@@ -284,5 +394,40 @@ div.btn-centred {
     }
     .play-title {
         display: inline;
+    }
+    .play-panel-a {
+        float: left;
+        display: inline;
+        margin-left: 5px;
+        margin-right: 5px;
+        width: auto;
+    }
+    .play-panel-b {
+        width: 22em;
+        overflow: visible;
+        float: left;
+        display: inline;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .word-list-wrapper {
+        margin-top: 0px;
+    }
+    div.dicebase {
+        width : 6rem;
+        height : 6rem;
+        background-size: 6rem 6rem;
+        line-height: 6rem;
+        font-size: 4rem;
+        margin: 4px;
+    }
+    table.boggle, td.boggle {
+        border: 4px solid #22689D;
+    }
+    td.background {
+        padding: 4px;
+    }
+    .entered-words {
+        height: 23.5rem;
     }
 }

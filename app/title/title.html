@@ -7,18 +7,22 @@
 
 <p class="text-center">
     {{titleCtrl.getServerStatusLabel()}}<p>
+<div class="spacer"></div>
 
 <div ng-hide="titleCtrl.isLoggedIn()">
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.showSignOnBoggle()">
-        Player Login</div><br>
+        Player Login</div>
+    <div class="spacer"></div>
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.guestStartGame()">
-        Start Solo Game</div><br>
+        Start Solo Game</div>
 </div>
 <div ng-show="titleCtrl.isLoggedIn()">
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.startGame()">
-        {{titleCtrl.getStartGameLabel()}}</div><br>
+        {{titleCtrl.getStartGameLabel()}}</div>
+    <div class="spacer"></div>
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.guestStartGame()">
-        Start Solo Game</div><br>
+        Start Solo Game</div>
+    <div class="spacer"></div>
     <div class="btn btn-default btn-centred" ng-click="titleCtrl.signOut()">
-        Sign Out</div><br>
+        Sign Out</div>
 </div>

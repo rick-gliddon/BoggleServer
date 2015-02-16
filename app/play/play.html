@@ -2,10 +2,10 @@
     <div class="play-title">
         <h1 class="centred-title spaced">Championship BOGGLE 2015</h1>
     </div>
-    <div class="sidebyside">
+    <div class="play-panel-a">
         <table>
             <tr>
-                <td style="background-color: #071D57; padding: 4px;">
+                <td class="background">
                     <table class="boggle">
                         <tr ng-repeat="matrixRow in playCtrl.matrix">
                             <td ng-repeat="die in matrixRow" class="boggle">
@@ -19,16 +19,18 @@
             </tr>
         </table>
     </div>
-    <div class="sidebysidelist">
-        <div class="panel panel-default word-list" ng-click="playCtrl.addWord()">
-            <h4>{{playCtrl.getFormingWord()}}_</h4>
-            <div class="entered-words">
-                <p ng-repeat="word in playCtrl.wordList">{{word}}</p>
+    <div class="play-panel-b">
+        <div class="word-list-wrapper">
+            <div class="panel panel-default word-list" ng-click="playCtrl.addWord()">
+                <h4>{{playCtrl.getFormingWord()}}_</h4>
+                <div class="entered-words">
+                    <p ng-repeat="word in playCtrl.wordList">{{word}}</p>
+                </div>
             </div>
-        </div>
-        <div class="progress" style="margin-right: 5px;">
-            <div class="progress-bar" style="width: {{playCtrl.gameProgress}}%;">
-                <span class="sr-only">{{playCtrl.gameProgress}}% Complete</span>
+            <div class="progress">
+                <div class="progress-bar" style="width: {{playCtrl.gameProgress}}%;">
+                    <span class="sr-only">{{playCtrl.gameProgress}}% Complete</span>
+                </div>
             </div>
         </div>
     </div>
