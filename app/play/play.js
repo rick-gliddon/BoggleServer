@@ -23,9 +23,6 @@
         var player;
         var checkinPoint;
         var keyTypedServiceId;
-        
-        gameStateService.addCallback(
-                gameStateService.states.PLAY, startPlay);
 
         pc.GAME_DURATION = 180000;
 //        pc.GAME_DURATION = 30000;
@@ -40,10 +37,16 @@
         pc.fontSize=Math.floor(pc.diceWidth * 0.75);
         pc.uFontSize=Math.floor(pc.diceWidth * 0.46);
 
+        // A 4x4 2D array containing the Die objects
         pc.matrix;
-        pc.coords;
+        // Array containing the Dice making up the word being created
         pc.formingDice = [];
+        // The list of words entered by the player for this game
         pc.wordList;
+        // The view model for the wordList.  The wordList broken into columns.
+        pc.wordLists = [];
+        // The number of rows displayed in the entered word list.
+        var wordListNumRows;
         
         var letterCoords;
 
@@ -53,7 +56,17 @@
         var startPlayTime;
         var playTimer;
         var startPollTime;
+        
+        
+        //--------------------//
+        // Register callbacks //
+        //--------------------//
+        
+        gameStateService.addCallback(
+                gameStateService.states.PLAY, startPlay);
+        angular.element($window).on('resize', resizeCallback);
 
+        // Returns the word currently being created
         pc.getFormingWord = function() {
           return pc.formingDice
             .reduce(function(acc, curr, i, a) {
@@ -65,6 +78,8 @@
             }, '');
         };
 
+        // Adds the forming word to the entered word list as long as the game
+        // is still in play
         pc.addWord = function() {
           if (!isGameInPlay()) {
             return;
@@ -72,6 +87,8 @@
           addWordImpl();
         };
         
+        // Adds the forming word to the entered word list if it is valid
+        // and hasn't already been entered
         function addWordImpl() {
           var word = pc.getFormingWord();
           if (word.length < 3) {
@@ -80,9 +97,52 @@
           }
           if (pc.wordList.indexOf(word) < 0) {
             pc.wordList.unshift(word);
+            pc.wordLists = getWordLists();
           }
           // else already have word.  Alert?
           clearSelections();
+        }
+        
+        // Constructs the columns of entered words as they'll appear in the
+        // completed word list
+        function getWordLists() {
+            if (!angular.isDefined(pc.wordList)) {
+                return [];
+            }
+            var numLists = Math.floor(pc.wordList.length / wordListNumRows) + 1;
+            var wordLists = [];
+            var begin = 0;
+            var end = pc.wordList.length % wordListNumRows;
+            for (var i = 0; i < numLists; i++) {
+                wordLists.push(pc.wordList.slice(begin, end));
+                begin = end;
+                end += i < numLists - 1 ? wordListNumRows : pc.wordList.length - begin;
+            }
+            return wordLists;
+        }
+        
+        function resizeCallback() {
+            var viewportWidth = $window.innerWidth/16;
+            var viewportHeight = $window.innerHeight/16;
+            console.log("resizeCallback called.  viewportWidth: " + viewportWidth);
+            var newWordListNumRows;
+            // iPhone portrait
+            if (viewportWidth < 21) {
+                newWordListNumRows = 3;
+            } // Galaxy Note portrait
+            else if (viewportWidth < 30) {
+                newWordListNumRows = 5;
+            } // Landscape handhelds
+            else if (viewportWidth < 41) {
+                newWordListNumRows = 6;
+            } // Large devices
+            else {
+                newWordListNumRows = 8;
+            }
+            if (wordListNumRows !== newWordListNumRows) {
+                wordListNumRows = newWordListNumRows;
+                pc.wordLists = getWordLists();
+            }
         }
         
         function clearSelections() {
@@ -197,6 +257,7 @@
             pc.matrix = newMatrix;
             wordFinder.setMatrix(newMatrix);
             wordFinder.setFormingDice(pc.formingDice);
+            resizeCallback();
             playTimer = $interval(progressPlay, 1000);
         }
         
@@ -258,9 +319,9 @@
         
         function initialise() {
             pc.matrix = [];
-            pc.coords = {};
             pc.formingDice = [];
             pc.wordList = [];
+            pc.wordLists = [];
             letterCoords = {};
             wordFinder.initialise();
 

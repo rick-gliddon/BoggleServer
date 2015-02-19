@@ -71,6 +71,16 @@ table.diethumb, td.diethumb {
     margin-bottom: 5px;
     padding-left: 5px;
 }
+p.word-item {
+    min-width: 3em;
+    margin-right: 1em;
+    margin-bottom: 7px;
+}
+div.word-column {
+    display: inline-block;
+    height: 9rem;
+    vertical-align: top;
+}
 
 /*
  * Styles for the Login page
@@ -298,8 +308,10 @@ div.spacer {
         padding: 2px;
     }
     .entered-words {
-        height: 8rem;
-        overflow-y: auto;
+        height: 9rem;
+        overflow: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
     }
     
 /* Galaxy Note portait */

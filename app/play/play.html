@@ -24,7 +24,9 @@
             <div class="panel panel-default word-list" ng-click="playCtrl.addWord()">
                 <h4>{{playCtrl.getFormingWord()}}_</h4>
                 <div class="entered-words">
-                    <p ng-repeat="word in playCtrl.wordList">{{word}}</p>
+                    <div ng-repeat="wordList in playCtrl.wordLists" class="word-column">
+                        <p class="word-item" ng-repeat="word in wordList">{{word}}</p>
+                    </div>
                 </div>
             </div>
             <div class="progress">
