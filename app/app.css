@@ -11,12 +11,20 @@
 /*
  * In-play styles
  */
+#boggle-background {
+    background: -webkit-linear-gradient(#D44D00, darkorange); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#D44D00, darkorange); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#D44D00, darkorange); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#D44D00, darkorange); /* Standard syntax (must be last) */
+    height: 99vh;
+}
 span.dicebase {
     vertical-align: middle;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;/*"Lucida Console", Monaco, monospace;*/
     font-weight: bolder;
-    color: #2892A0;
+/*     color: #2892A0; */
+    color: #2873A1;
 }
 table.boggle {
     border-collapse: collapse;
@@ -245,10 +253,14 @@ div.spacer {
         font-weight: 700;*/
         text-align: center;
         font-weight: bold;
-        color: darkblue;
+        color: white;
+        text-shadow: 1.5px 1.5px 1px #000000;
+        -webkit-text-stroke-width: 0.5px;
+        -webkit-text-stroke-color: darkblue;
+/*        color: darkblue;
         -webkit-text-fill-color: white;
         -webkit-text-stroke-width: 2px;
-        -webkit-text-stroke-color: darkblue;
+        -webkit-text-stroke-color: darkblue;*/
     }
     .bottom-spaced {
         padding-bottom: 1rem;
@@ -293,7 +305,8 @@ div.spacer {
         text-align: center;
         font-family: Arial, Helvetica, sans-serif;/*"Lucida Console", Monaco, monospace;*/
         font-weight: bolder;
-        color: #2892A0;
+/*         color: #2892A0; */
+        color: #2873A1;
         margin: 4px;
     }
     span.die-little-u {
@@ -312,6 +325,25 @@ div.spacer {
         overflow: auto;
         overflow-y: hidden;
         white-space: nowrap;
+    }
+    /* http://charliepark.org/bootstrap_buttons/ */
+    /* Hue 34 Saturation 100 Lightness 45 Puffiness 4 */
+    .btn-boggle {
+      background-color: hsl(34, 100%, 41%) !important;
+      background-repeat: repeat-x;
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f98d00", endColorstr="#d17600");
+      background-image: -khtml-gradient(linear, left top, left bottom, from(#f98d00), to(#d17600));
+      background-image: -moz-linear-gradient(top, #f98d00, #d17600);
+      background-image: -ms-linear-gradient(top, #f98d00, #d17600);
+      background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f98d00), color-stop(100%, #d17600));
+      background-image: -webkit-linear-gradient(top, #f98d00, #d17600);
+      background-image: -o-linear-gradient(top, #f98d00, #d17600);
+      background-image: linear-gradient(#f98d00, #d17600);
+      border-color: #d17600 #d17600 hsl(34, 100%, 39%);
+      color: #fff !important;
+/*       font-weight: bold; */
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.13);
+      -webkit-font-smoothing: antialiased;
     }
     
 /* Galaxy Note portait */

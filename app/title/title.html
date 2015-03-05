@@ -1,5 +1,21 @@
 <h2 class="centred-title">Championship</h2>
-<h1 class="centred-title">BOGGLE</h1>
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+            width="147" height="54" viewBox="0 0 147 53" class="centre">
+            <defs>
+                <filter id="f4" x="-1" y="0" width="250%" height="200%">
+                    <feOffset result="offOut" in="SourceAlpha" dx="2" dy="2" />
+                    <feGaussianBlur result="blurOut" in="offOut" stdDeviation="2" />
+                    <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+                </filter>
+            </defs>
+
+         <g font-family="Montserrat" font-size="36px" font-weight="bold"
+            stroke-width="11px" stroke-linejoin="round" text-anchor="middle" filter="url(#f4)">
+             <text x="72" y="34" fill="none" stroke="white">Boggle</text>
+             <text x="72" y="34" fill="blue" stroke="none">Boggle</text>
+         </g>
+       </svg>
 <h3 class="centred-title bottom-spaced">2015</h3>
 
 <p class="text-center" ng-show="titleCtrl.isLoggedIn()">
@@ -10,10 +26,10 @@
 <div class="spacer"></div>
 
 <div ng-hide="titleCtrl.isLoggedIn()">
-    <div class="btn btn-default btn-centred" ng-click="titleCtrl.showSignOnBoggle()">
+    <div class="btn btn-boggle btn-centred" ng-click="titleCtrl.showSignOnBoggle()">
         Player Login</div>
     <div class="spacer"></div>
-    <div class="btn btn-default btn-centred" ng-click="titleCtrl.guestStartGame()">
+    <div class="btn btn-boggle btn-centred" ng-click="titleCtrl.guestStartGame()">
         Start Solo Game</div>
 </div>
 <div ng-show="titleCtrl.isLoggedIn()">
