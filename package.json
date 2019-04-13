@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "main": "server.js",
   "dependencies": {
-    "express": "~4.9.0",
     "body-parser": "~1.8.1",
-    "mongoose": "~3.6.13",
+    "express": "~4.9.0",
     "express-jwt": "0.5.0",
-    "jsonwebtoken": "1.1.2"
+    "jsonwebtoken": "1.1.2",
+    "mongoose": "^5.5.1"
   },
   "engines": {
-  	"node": "0.10.31"
+    "node": "0.10.31"
   }
 }
