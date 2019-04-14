@@ -47,7 +47,7 @@ table.diethumb, td.diethumb {
 .dicebase.dieselected {
     /*color: #3BE4FA;*/
     -webkit-filter: saturate(3);
-    filter: saturate(30%);
+    /*filter: saturate(30%);*/
 }
 .sidebyside {
     float: left;

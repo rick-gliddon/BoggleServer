@@ -33,6 +33,7 @@
         rc.playerScores;
         rc.singlePlayer;
         rc.outcome;
+        rc.totalScore;
         
         function initialise() {
             rc.matrix = [];
@@ -131,31 +132,35 @@
                 }
             }
             // Construct the myWords and missedWords lists
+            rc.totalScore = 0;
             finalResults.wds.forEach(function(resultWord) {
                 if (resultWord.wrd.length >= 3) {
-                var newWord = {};
-                newWord.word = resultWord.wrd;
-                newWord.score = resultWord.scr;
-                newWord.winner = resultWord.pls.length === 1;
-                newWord.isActuallyAWord = true;
-                newWord.players = [];
-                var myWord = false;
-                resultWord.pls.forEach(function(playerId) {
-                    var currentPlayer = finalResults.pls[playerId];
-                    if (currentPlayer === player) {
-                        myWord = true;
+                    var newWord = {};
+                    newWord.word = resultWord.wrd;
+                    newWord.score = resultWord.scr;
+                    newWord.winner = resultWord.pls.length === 1;
+                    newWord.isActuallyAWord = true;
+                    newWord.players = [];
+                    var myWord = false;
+                    resultWord.pls.forEach(function(playerId) {
+                        var currentPlayer = finalResults.pls[playerId];
+                        if (currentPlayer === player) {
+                            myWord = true;
+                        } else {
+                            newWord.players.push(currentPlayer);
+                        }
+                    });
+                    if (myWord) {
+                        rc.myWords.push(newWord);
+                        var index = foundWords.indexOf(resultWord.wrd);
+                        // Remove the word from the foundWords list
+                        foundWords.splice(index, 1);
                     } else {
-                        newWord.players.push(currentPlayer);
+                        rc.missedWords.push(newWord);
                     }
-                });
-                if (myWord) {
-                    rc.myWords.push(newWord);
-                    var index = foundWords.indexOf(resultWord.wrd);
-                    // Remove the word from the foundWords list
-                    foundWords.splice(index, 1);
-                } else {
-                    rc.missedWords.push(newWord);
-                }
+                    if (resultWord.scr) {
+                        rc.totalScore += resultWord.scr;
+                    }
                 }
             });
             foundWords.forEach(function(wrongWord) {
