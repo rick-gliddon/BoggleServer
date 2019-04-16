@@ -24,7 +24,7 @@
                     <table class="boggle diethumb">
                         <tr ng-repeat="matrixRow in resultsCtrl.matrix">
                             <td ng-repeat="die in matrixRow" class="boggle diethumb">
-                                <div class="dicebase noselect diethumb" ng-style="die.style" ng-class="{dieselected: die.selected}">
+                                <div class="dicebase noselect diethumb" ng-style="die.style()" ng-class="{dieselected: die.selected}">
                                     {{die.letter}}<span ng-show="die.isQ()" class="dicebase noselect die-little-u-thumb">u</span>
                                 </div>
                             </td>

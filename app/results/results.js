@@ -198,6 +198,7 @@
             diceActions.forEach(function(dieAction) {
                 dieAction.die.selected = true;
                 highlightedDice.push(dieAction.die);
+                dieAction.die.bump();
             });
         };
         

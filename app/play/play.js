@@ -169,6 +169,7 @@
             die.selected = false;
             pc.formingDice.pop();
           }
+          die.bump();
         };
 
         function progressPlay() {
@@ -347,19 +348,28 @@
           this.rotation = Math.floor(Math.random() * 4) * 90;
           this.rplusw = this.rotation + Math.floor(Math.random() * 8) - 4;
           this.selected = false;
+
           this.underlineStyle = function() {
             return this.letter === 'M'
                 || this.letter === 'W'
                 || this.letter === 'N'
                 || this.letter === 'Z' ? 'underline' : 'none';
           };
-          this.style = {
-            'background' : 'url(svg/dice' + this.rotation + 'deg.svg)',
-            '-ms-transform' : 'rotate(' + this.rplusw + 'deg)',
-            '-webkit-transform' : 'rotate(' + this.rplusw + 'deg)',
-            'transform' : 'rotate(' + this.rplusw + 'deg)',
-            'text-decoration' : this.underlineStyle()
+
+          this.bump = function() {
+            this.rplusw = this.rotation + Math.floor(Math.random() * 8) - 4;
           };
+
+          this.style = function() {
+            return {
+                'background' : 'url(svg/dice' + this.rotation + 'deg.svg)',
+                '-ms-transform' : 'rotate(' + this.rplusw + 'deg)',
+                '-webkit-transform' : 'rotate(' + this.rplusw + 'deg)',
+                'transform' : 'rotate(' + this.rplusw + 'deg)',
+                'text-decoration' : this.underlineStyle()
+            };
+          };
+
           this.isQ = function() {
             return this.letter === 'Q';
           };
