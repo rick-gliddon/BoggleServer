@@ -164,10 +164,13 @@
               die.selected = true;
               pc.formingDice.push(die);
             }
-          } else if (dieIndex === (pc.formingDice.length - 1)) {
-            // Die last selected. Unselect.
-            die.selected = false;
-            pc.formingDice.pop();
+          } else {
+            for (var i = pc.formingDice.length - 1; i >= dieIndex; i--) {
+                // Deselect all after and including the selected die
+                var deselectDie = pc.formingDice[i];
+                deselectDie.selected = false;
+                pc.formingDice.pop();
+            }
           }
           die.bump();
         };
