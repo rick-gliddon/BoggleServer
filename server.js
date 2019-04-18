@@ -30,13 +30,13 @@ var heartbeatRoute = require('./server/routes/heartbeat');
 var wordlist = require('./server/engine/wordlist');
 var WordTree = require('./server/engine/wordtree');
 // Loading words into word tree.
-var str = fs.readFileSync('./server/data/common-234.txt', 'utf8');
+var str = fs.readFileSync('./server/data/sowpods-complete.txt', 'utf8');
 var words = wordlist.createWordList(str);
 var wordTree = new WordTree();
 wordTree.addWords(words);
-str = fs.readFileSync('./server/data/linux.words', 'utf8');
-words = wordlist.createWordList(str);
-wordTree.addWords(words);
+// str = fs.readFileSync('./server/data/linux.words', 'utf8');
+// words = wordlist.createWordList(str);
+// wordTree.addWords(words);
 startgameRoute.setWordTree(wordTree);
 guestcheckinRoute.setWordTree(wordTree);
 
